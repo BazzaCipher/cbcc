@@ -5,6 +5,7 @@ import badge from './badge'
 import card from './card'
 import cardsSection from './cardsSection'
 import company from './company'
+import contactSection from './contactSection'
 import ctaSection from './ctaSection'
 import customImage from './customImage'
 import footer from './footer'
@@ -25,6 +26,7 @@ export const schemaTypes = [
   card,
   cardsSection,
   company,
+  contactSection,
   ctaSection,
   customImage,
   footer,
