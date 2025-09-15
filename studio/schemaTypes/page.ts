@@ -49,7 +49,6 @@ export default defineType({
         {type: 'heroSection'},
         {type: 'logosSection'},
         {type: 'testimonialsSection'},
-        {type: 'contactSection'},
       ],
       group: 'content',
     }),
