@@ -5,6 +5,7 @@ import { sanityConfig } from './src/utils/sanity-client';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://collimatedbeam.com',
     image: {
         domains: ['cdn.sanity.io']
     },
