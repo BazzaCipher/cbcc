@@ -1,9 +1,7 @@
 ---
-interface Props {
-  title?: string;
-  subtitle?: string;
-  formAction?: string;
-  accessKey?: string;
+import { type ContactUsSection } from 'types';
+
+interface Props extends ContactUsSection {
   'data-sb-field-path'?: string;
 }
 
@@ -32,7 +30,7 @@ const redirectUrl = `${siteOrigin}/thanks`;
 		class="max-w-3xl mx-auto grid gap-6 mt-5"
 		id="contact-form"
 	>
-    <input type="hidden" name="access_key" value={accessKey} />
+    <!-- <input type="hidden" name="access_key" value={accessKey} /> -->
 
 	<div id="form-message" class="text-center mt-4 hidden">
 		<p id="form-message-text" class="text-green-600 font-medium"></p>
@@ -42,16 +40,31 @@ const redirectUrl = `${siteOrigin}/thanks`;
 		<input 
 			type="text" 
 			name="name" 
-			placeholder="Your Name" 
+			placeholder="Name" 
+			required 
+			class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500"}
+		/>
+		<input 
+			type="text" 
+			name="email" 
+			placeholder="Email" 
+			pattern="\w+@\w+\.\w+"
 			required 
 			class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500"}
 		/>
 
 		<input 
-			type="email" 
-			name="email" 
-			placeholder="Your Email" 
-			required 
+			type="tel" 
+			name="phonenumber" 
+			placeholder="Phone number" 
+			pattern="\d+"
+			class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500"}
+		/>
+		<input 
+			type="text" 
+			name="postcode" 
+			placeholder="Postcode" 
+			pattern="[0-9]{4}"
 			class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500"}
 		/>
     </div>
@@ -59,7 +72,7 @@ const redirectUrl = `${siteOrigin}/thanks`;
     <textarea 
       name="message" 
       rows="6" 
-      placeholder="Your Message" 
+      placeholder="Your message" 
       required 
       class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500"}
     ></textarea>

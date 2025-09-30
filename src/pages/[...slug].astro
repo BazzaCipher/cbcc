@@ -3,6 +3,7 @@ import type { Page } from 'types';
 import Layout from '@layouts/Layout.astro';
 import Cards from '@components/Cards.astro';
 import Cta from '@components/Cta.astro';
+import ContactUsForm from '@components/ContactUsForm.astro';
 import Hero from '@components/Hero.astro';
 import Logos from '@components/Logos.astro';
 import Testimonials from '@components/Testimonials.astro';
@@ -28,6 +29,7 @@ const { _id, title, sections, metaTitle, metaDescription, socialImage } = page |
 const componentMap = {
     cardsSection: Cards,
     ctaSection: Cta,
+    contactSection: ContactUsForm,
     heroSection: Hero,
     logosSection: Logos,
     testimonialsSection: Testimonials,

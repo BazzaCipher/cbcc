@@ -43,4 +43,8 @@ export const SECTIONS = `{
         }
     }
   },
+  _type == "contactSection" => {
+	title,
+	subtitle
+  },
 }`;
