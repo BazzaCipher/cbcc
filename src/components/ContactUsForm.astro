@@ -30,7 +30,7 @@ const redirectUrl = `${siteOrigin}/thanks`;
 		class="max-w-3xl mx-auto grid gap-6 mt-5"
 		id="contact-form"
 	>
-    <!-- <input type="hidden" name="access_key" value={accessKey} /> -->
+    <input type="hidden" name="access_key" value={accessKey} />
 
 	<div id="form-message" class="text-center mt-4 hidden">
 		<p id="form-message-text" class="text-green-600 font-medium"></p>
@@ -48,7 +48,7 @@ const redirectUrl = `${siteOrigin}/thanks`;
 			type="text" 
 			name="email" 
 			placeholder="Email" 
-			pattern="\w+@\w+\.\w+"
+			pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-zA-Z.]{2,}$"
 			required 
 			class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500"}
 		/>
@@ -77,6 +77,45 @@ const redirectUrl = `${siteOrigin}/thanks`;
       class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500"}
     ></textarea>
 
+	<div>
+		<label for="attachment" class="text-center block text-sm font-medium text-gray-600">If you have any further information or images, feel free to provide them below:</label>
+		<div
+		id="dropzone"
+		class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-300 px-6 py-10 transition
+		hover:border-blue-400 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20"
+		>
+			<div class="text-center">
+			<!-- Simple icon -->
+			<svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+			<path stroke-width="1.5" d="M12 16V4m0 0 3.5 3.5M12 4 8.5 7.5M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+			</svg>
+
+			<div class="mt-4 flex items-center justify-center text-sm">
+			<label
+			for="attachment"
+			class="relative cursor-pointer rounded-md bg-white font-semibold text-blue-600 focus-within:outline-none
+			focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:text-blue-700 px-2 py-1"
+			>
+			<span>Upload a file</span>
+			<input
+			id="attachment"
+			name="attachment"
+			type="file"
+			class="sr-only"
+			multiple
+			accept=".pdf,.jpg,.jpeg,.png,.heic,.webp"
+			/>
+			</label>
+		<p class="text-gray-600">or drag & drop</p>
+		</div>
+
+		<p class="mt-2 text-xs text-gray-500">PDF, PNG, JPG — up to 5MB</p>
+		<p id="file-name" class="mt-3 text-sm text-gray-700 hidden"></p>
+		<p id="file-error" class="mt-2 text-sm text-red-600 hidden"></p>
+        </div>
+      </div>
+    </div>
+
     <div class="text-center">
       <button 
         type="submit" 
@@ -91,6 +130,7 @@ const redirectUrl = `${siteOrigin}/thanks`;
 </section>
 
 <script is:inline>
+    const MAX_SIZE_MB = 5;
 	const form = document.getElementById('contact-form');
 	const msgBox = document.getElementById('form-message');
     const msgText = document.getElementById('form-message-text');
