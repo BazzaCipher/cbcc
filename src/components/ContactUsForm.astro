@@ -136,32 +136,119 @@ const redirectUrl = `${siteOrigin}/thanks`;
     const msgText = document.getElementById('form-message-text');
 
 	form?.addEventListener('submit', async (e) => {
-	e.preventDefault();
-	const formData = new FormData(form);
+		e.preventDefault();
+		const formData = new FormData(form);
 
-	try {
-		const response = await fetch(form.action, {
-			method: 'POST',
-			headers: { Accept: 'application/json' },
-			body: formData
-		});
+		const file = document.getElementById("attachment");
+		const filesize = file.files[0].size / 1024;
 
-		
-	if (response.ok) {
-		form.reset();
-		msgText.textContent = 'Thank you! Your message has been sent.';
-		msgText.className = 'text-green-600 font-medium';
-		msgBox.classList.remove('hidden');
-	} else {
-		const json = await response.json();
-		msgText.textContent = json.message || 'Something went wrong.';
-		msgText.className = 'text-red-600 font-medium';
-		msgBox.classList.remove('hidden');
-	}
-    } catch (err) {
-		msgText.textContent = 'There was a network error.';
-		msgText.className = 'text-red-600 font-medium';
-		msgBox.classList.remove('hidden');
-	}
+		if (filesize > MAX_SIZE_MB * 1024) {
+			alert(`Please upload file less than ${MAX_SIZE_MB} MB`);
+			return;
+		}
+
+		try {
+			const response = await fetch(form.action, {
+				method: 'POST',
+				headers: { Accept: 'application/json' },
+				body: formData
+			});
+
+			
+		if (response.ok) {
+			form.reset();
+			msgText.textContent = 'Thank you! Your message has been sent.';
+			msgText.className = 'text-green-600 font-medium';
+			msgBox.classList.remove('hidden');
+		} else {
+			const json = await response.json();
+			msgText.textContent = json.message || 'Something went wrong.';
+			msgText.className = 'text-red-600 font-medium';
+			msgBox.classList.remove('hidden');
+		}
+		} catch (err) {
+			msgText.textContent = 'There was a network error.';
+			msgText.className = 'text-red-600 font-medium';
+			msgBox.classList.remove('hidden');
+		}
 	});
+</script>
+
+<script is:client>
+	(function () {
+    const dropzone = document.getElementById('dropzone');
+    const input = document.getElementById('attachment');
+    const fileName = document.getElementById('file-name');
+    const fileError = document.getElementById('file-error');
+
+    function resetMessages() {
+      fileError.classList.add('hidden');
+      fileName.classList.add('hidden');
+    }
+
+    function showFile(file) {
+      resetMessages();
+      if (!file) return;
+
+      const sizeMB = file.size / 1024 / 1024;
+      if (sizeMB > MAX_SIZE_MB) {
+        fileError.textContent = `File is too large (${sizeMB.toFixed(1)}MB). Max allowed is ${MAX_SIZE_MB}MB.`;
+        fileError.classList.remove('hidden');
+        input.value = ""; // clear invalid file
+        return;
+      }
+      fileName.textContent = `${file.name} • ${sizeMB.toFixed(1)}MB`;
+      fileName.classList.remove('hidden');
+    }
+
+    input.addEventListener('change', (e) => showFile(e.target.files[0]));
+
+    ['dragenter','dragover'].forEach(evt =>
+      dropzone.addEventListener(evt, (e) => {
+        e.preventDefault(); e.stopPropagation();
+        dropzone.classList.add('ring-2','ring-blue-500','border-blue-500');
+      })
+    );
+
+    ['dragleave','drop'].forEach(evt =>
+      dropzone.addEventListener(evt, (e) => {
+        e.preventDefault(); e.stopPropagation();
+        dropzone.classList.remove('ring-2','ring-blue-500','border-blue-500');
+      })
+    );
+
+    dropzone.addEventListener('drop', (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+
+		const files = e.dataTransfer.files;
+		if (!files || !files.length) return;
+
+		const file = files[0];
+
+		// get accepted extensions from the input's accept attribute
+		const accepted = (input.getAttribute('accept') || "")
+		.split(',')
+		.map(type => type.trim().toLowerCase());
+
+		const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+
+		// check type
+		const isAccepted =
+		accepted.includes(file.type.toLowerCase()) ||
+		accepted.includes(fileExt);
+
+		if (!isAccepted) {
+		resetMessages();
+		fileError.textContent = `File type not allowed. Allowed: ${accepted.join(', ')}`;
+		fileError.classList.remove('hidden');
+		input.value = ""; // clear invalid
+		return;
+		}
+
+		// assign and show
+		input.files = files;
+		showFile(file);
+	});
+  })();
 </script>
