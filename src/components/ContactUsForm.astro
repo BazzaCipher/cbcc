@@ -6,11 +6,10 @@ interface Props extends ContactUsSection {
 }
 
 const {
-  title = 'Contact Us',
-  subtitle = 'We’d love to hear from you. Please fill out the form below.',
+	title = 'Contact Us',
+	subtitle = 'We’d love to hear from you. Please fill out the form below.',
+	formAction = 'https://api.web3forms.com/submit',
 } = Astro.props as Props;
-const formAction = 'https://api.web3forms.com/submit';
-const accessKey = 'f4d8f006-2233-4d8b-a682-38238c031487';
 const siteOrigin = Astro.site ? new URL(Astro.site).origin : '';
 const redirectUrl = `${siteOrigin}/thanks`;
 ---
@@ -30,7 +29,6 @@ const redirectUrl = `${siteOrigin}/thanks`;
 		class="max-w-3xl mx-auto grid gap-6 mt-5"
 		id="contact-form"
 	>
-    <input type="hidden" name="access_key" value={accessKey} />
 
 	<div id="form-message" class="text-center mt-4 hidden">
 		<p id="form-message-text" class="text-green-600 font-medium"></p>
@@ -46,23 +44,23 @@ const redirectUrl = `${siteOrigin}/thanks`;
 		/>
 		<input 
 			type="text" 
-			name="email" 
+			name="Email Address" 
 			placeholder="Email" 
-			pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-zA-Z.]{2,}$"
+			pattern="\\w+@[a-z]+(\\.[a-z]{2,})+"
 			required 
 			class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500"}
 		/>
 
 		<input 
 			type="tel" 
-			name="phonenumber" 
+			name="Phone Number" 
 			placeholder="Phone number" 
-			pattern="\d+"
+			pattern="\\d+"
 			class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500"}
 		/>
 		<input 
 			type="text" 
-			name="postcode" 
+			name="Postcode" 
 			placeholder="Postcode" 
 			pattern="[0-9]{4}"
 			class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500"}
@@ -78,7 +76,7 @@ const redirectUrl = `${siteOrigin}/thanks`;
     ></textarea>
 
 	<div>
-		<label for="attachment" class="text-center block text-sm font-medium text-gray-600">If you have any further information or images, feel free to provide them below:</label>
+		<label for="attachment" class="text-center block text-sm font-medium text-gray-600">If you have any images, feel free to provide them below:</label>
 		<div
 		id="dropzone"
 		class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-300 px-6 py-10 transition
@@ -160,9 +158,12 @@ const redirectUrl = `${siteOrigin}/thanks`;
 			msgText.textContent = 'Thank you! Your message has been sent.';
 			msgText.className = 'text-green-600 font-medium';
 			msgBox.classList.remove('hidden');
+			form.reset();
 		} else {
 			const json = await response.json();
-			msgText.textContent = json.message || 'Something went wrong.';
+			if (json.error == "rate_limited") {
+				msgText.textContent = 'Please wait 1 hour before sending another message or send an email to admin@collimatedbeam.com';
+			} else { msgText.textContent = json.message || 'Something went wrong.' };
 			msgText.className = 'text-red-600 font-medium';
 			msgBox.classList.remove('hidden');
 		}
@@ -202,6 +203,7 @@ const redirectUrl = `${siteOrigin}/thanks`;
     }
 
     input.addEventListener('change', (e) => showFile(e.target.files[0]));
+    input.addEventListener('reset', (e) => showFile(e.target.files[0]));
 
     ['dragenter','dragover'].forEach(evt =>
       dropzone.addEventListener(evt, (e) => {
