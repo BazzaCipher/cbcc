@@ -67,6 +67,7 @@ export interface ContactUsSection extends Section {
 
 export interface Footer {
     text?: string;
+    footerlogo?: CustomImage;
 }
 
 export interface Header {

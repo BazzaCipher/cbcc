@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sanity from '@sanity/astro';
 import { sanityConfig } from './src/utils/sanity-client';
+import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
@@ -9,7 +10,7 @@ export default defineConfig({
     image: {
         domains: ['cdn.sanity.io']
     },
-    integrations: [sanity(sanityConfig)],
+    integrations: [sanity(sanityConfig), icon()],
     vite: {
         plugins: [tailwindcss()],
         server: {
