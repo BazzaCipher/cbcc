@@ -71,7 +71,7 @@ function formatCanonicalURL(url: string | URL) {
         <meta property="twitter:description" content={description} />
         {resolvedImage?.src && <meta property="twitter:image" content={resolvedImage.src} />}
     </head>
-    <body class="antialiased">
+    <body class="antialiased flex flex-col min-h-screen">
         <Header {...configData.header} data-sb-field-path={`${configData._id}:header`} />
         <slot />
         <Footer {...configData.footer} data-sb-field-path={`${configData._id}:footer`} />

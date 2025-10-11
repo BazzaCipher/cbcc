@@ -17,8 +17,8 @@ const { title, logo, navLinks, 'data-sb-field-path': fieldPath } = Astro.props;
 				<div class="flex">
 					<a class="flex items-center ml-8" href="/">
 						<ResponsiveImage _id={logo._id} src={logo.src} width={64} height={64} alt={logo.alt} />
+						<p class="place-content-center text-white font-extrabold m-3">Collimated Beam Laser Cleaning</p> 
 					</a>
-					<p class="place-content-center text-white font-extrabold m-3">Collimated Beam Laser Cleaning</p> 
 				</div>
             ) : (
                 <a class="text-xl font-bold sm:text-2xl" href="/" data-sb-field-path=".title">
