@@ -45,7 +45,6 @@ export default defineType({
       type: 'array',
       of: [
         {type: 'cardsSection'},
-        {type: 'contactSection'},
         {type: 'ctaSection'},
         {type: 'heroSection'},
         {type: 'logosSection'},

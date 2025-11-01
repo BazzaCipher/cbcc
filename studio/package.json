@@ -35,9 +35,5 @@
     "printWidth": 100,
     "bracketSpacing": false,
     "singleQuote": true
-  },
-  "overrides": {
-    "esbuild": "0.25.9",
-    "@stackbit/sdk": { "esbuild": "0.19.12" }
   }
 }

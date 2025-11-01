@@ -2,15 +2,13 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sanity from '@sanity/astro';
 import { sanityConfig } from './src/utils/sanity-client';
-import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://collimatedbeam.com',
     image: {
         domains: ['cdn.sanity.io']
     },
-    integrations: [sanity(sanityConfig), icon()],
+    integrations: [sanity(sanityConfig)],
     vite: {
         plugins: [tailwindcss()],
         server: {

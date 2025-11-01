@@ -20,22 +20,14 @@ export default defineType({
       type: 'string',
       group: 'content',
     }),
-    defineField({
-      name: 'footerlogo',
-      title: 'Footer Logo',
-      type: 'customImage',
-      group: 'content',
-    }),
   ],
   preview: {
     select: {
       text: 'text',
-      media: 'logo.image.asset',
     },
     prepare(selection) {
       return {
         title: selection.text,
-		media: selection.media
       }
     },
   },

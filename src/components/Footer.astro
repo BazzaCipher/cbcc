@@ -1,51 +1,18 @@
 ---
 import { marked } from 'marked';
 import { type Footer } from 'types';
-import ResponsiveImage from '@components/ResponsiveImage.astro';
-import { Icon } from 'astro-icon/components';
 
 interface Props extends Footer {
     'data-sb-field-path'?: string;
 }
 
-const { text, footerlogo, 'data-sb-field-path': fieldPath } = Astro.props;
-const links = [
-	{ href: 'https://instagram.com/collimated_bea_cleaning', icon: 'mdi:instagram', label: 'Instagram' },
-	{ href: 'https://www.facebook.com/profile.php?id=61581166697811',  icon: 'mdi:facebook',  label: 'Facebook'  },
-	{ href: 'https://linkedin.com/in/you', icon: 'mdi:linkedin', label: 'LinkedIn' },
-];
+const { text, 'data-sb-field-path': fieldPath } = Astro.props;
 ---
 
 {
     text && (
-		<div class="m-auto flex-grow" />
-        <footer class="flex flex-col mt-5 px-4 py-0 sm:px-5 sm:py-12 text-white bg-black" data-sb-field-path={fieldPath}>
-			<div class="mx-20 my-10">
-				<h1 class="font-bold text-xl mb-2">Social Media</h1>
-				<p>Get in touch with us via social media.</p>
-				<ul class="flex gap-3 mt-5">
-				{
-					links.map(l => (
-						<li>
-						<a href={l.href} target="_blank" rel="noopener noreferrer" aria-label={l.label} class="inline-flex">
-						<Icon name={l.icon} class="w-8 h-8" />
-						</a>
-						</li>
-					))
-				}
-				</ul>
-			</div>
-			<hr class="dotted">
-			<div class="flex flex-col">
-				<div class="pt-8 text-center" data-sb-field-path=".text" set:html={marked.parse(text)} />
-				{
-					footerlogo.src ? (
-						<ResponsiveImage class="place-self-center" _id={footerlogo._id} src={footerlogo.src} width={300} height={64} alt={footerlogo.alt} />
-					) : (
-						<div />
-					)
-				}
-			</div>
+        <footer class="px-4 py-16 sm:px-5 sm:py-24" data-sb-field-path={fieldPath}>
+            <div class="mx-auto text-center max-w-7xl" data-sb-field-path=".text" set:html={marked.parse(text)} />
         </footer>
     )
 }

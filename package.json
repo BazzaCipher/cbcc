@@ -12,13 +12,12 @@
         "export": "node ./sanity-export/export.js"
     },
     "dependencies": {
-        "@iconify-json/mdi": "^1.2.3",
         "@sanity/astro": "^3.1.6",
-        "@sanity/client": "^7.6.0",
+        "@sanity/client": "^6.22.0",
         "@sanity/validation": "^3.14.4",
         "@tailwindcss/vite": "^4.0.9",
         "astro": "^5.1.1",
-        "astro-icon": "^1.1.5",
+        "astro-icon": "^1.1.0",
         "dotenv": "^16.4.7",
         "fs-extra": "^11.2.0",
         "marked": "^15.0.4",
@@ -27,7 +26,7 @@
     "devDependencies": {
         "@sanity/export": "^3.38.1",
         "@sanity/import": "^3.37.4",
-        "@stackbit/cms-sanity": "^0.2.90",
+        "@stackbit/cms-sanity": "^0.2.86",
         "@stackbit/types": "^2.0.0",
         "configstore": "7.0.0",
         "daisyui": "^5.0.0"

@@ -58,16 +58,8 @@ export interface CtaSection extends Section {
     cta?: Array<ActionButton | ActionLink>;
 }
 
-export interface ContactUsSection extends Section {
-	title?: string;
-	subtitle?: string;
-	formAction?: string;
-	accessKey?: string;
-}
-
 export interface Footer {
     text?: string;
-    footerlogo?: CustomImage;
 }
 
 export interface Header {
