@@ -4,7 +4,6 @@ import backgroundImage from './backgroundImage'
 import badge from './badge'
 import card from './card'
 import cardsSection from './cardsSection'
-import contactSection from './contactSection'
 import company from './company'
 import ctaSection from './ctaSection'
 import customImage from './customImage'
@@ -25,7 +24,6 @@ export const schemaTypes = [
   badge,
   card,
   cardsSection,
-  contactSection,
   company,
   ctaSection,
   customImage,
