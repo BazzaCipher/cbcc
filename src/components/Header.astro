@@ -3,25 +3,20 @@ import { type Header } from 'types';
 import Action from '@components/Action.astro';
 import ResponsiveImage from '@components/ResponsiveImage.astro';
 
-interface Props extends Header {
-    'data-sb-field-path'?: string;
-}
+interface Props extends Header {}
 
-const { title, logo, navLinks, 'data-sb-field-path': fieldPath } = Astro.props;
+const { title, logo, navLinks } = Astro.props;
 ---
 
-<nav class="bg-black mb-3 h-20 content-center" data-sb-field-path={fieldPath}>
-    <div class="flex items-center justify-between w-full mx-auto">
+<nav class="p-4 sm:p-5">
+    <div class="flex items-center justify-between w-full gap-6 mx-auto max-w-7xl">
         {
             logo.src ? (
-				<div class="flex">
-					<a class="flex items-center ml-8" href="/">
-						<ResponsiveImage _id={logo._id} src={logo.src} width={64} height={64} alt={logo.alt} />
-						<p class="place-content-center text-white font-extrabold m-3">Collimated Beam Laser Cleaning</p> 
-					</a>
-				</div>
+                <a class="flex items-center" href="/">
+                    <ResponsiveImage _id={logo._id} src={logo.src} width={logo.dimensions?.width} height={logo.dimensions?.height} alt={logo.alt} />
+                </a>
             ) : (
-                <a class="text-xl font-bold sm:text-2xl" href="/" data-sb-field-path=".title">
+                <a class="text-xl font-bold sm:text-2xl" href="/">
                     {title}
                 </a>
             )
@@ -29,13 +24,12 @@ const { title, logo, navLinks, 'data-sb-field-path': fieldPath } = Astro.props;
         {
             navLinks && navLinks.length > 0 && (
                 <>
-                    <ul class="hidden lg:mr-8 lg:flex lg:flex-wrap lg:items-center lg:gap-6" data-sb-field-path=".navLinks">
-                        {navLinks.map((item, index) => (
+                    <ul class="hidden lg:flex lg:flex-wrap lg:items-center lg:gap-6">
+                        {navLinks.map((item) => (
                             <li>
                                 <Action
                                     action={item}
                                     class:list={[item._type === 'actionLink' ? 'no-underline hover:underline' : 'px-4 py-3 h-auto min-h-0']}
-                                    data-sb-field-path={`.${index}`}
                                 />
                             </li>
                         ))}
@@ -50,15 +44,14 @@ const { title, logo, navLinks, 'data-sb-field-path': fieldPath } = Astro.props;
                             <span class="nav-toggle-icon" />
                         </button>
                         <div id="nav-panel" class="nav-panel absolute rounded-box -top-2 -right-2 z-1 shadow-xl bg-base-100 border border-base-200/70">
-                            <ul class="flex flex-col px-4 pb-6 pt-14" data-sb-field-path=".navLinks">
-                                {navLinks.map((item, index) => (
+                            <ul class="flex flex-col px-4 pb-6 pt-14">
+                                {navLinks.map((item) => (
                                     <li>
                                         <Action
                                             action={item}
                                             class:list={[
                                                 item._type === 'actionLink' ? 'block py-2 no-underline hover:underline' : 'w-full px-4 py-3.5 h-auto min-h-0'
                                             ]}
-                                            data-sb-field-path={`.${index}`}
                                         />
                                     </li>
                                 ))}

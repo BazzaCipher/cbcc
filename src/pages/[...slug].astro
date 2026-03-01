@@ -3,7 +3,6 @@ import type { Page } from 'types';
 import Layout from '@layouts/Layout.astro';
 import Cards from '@components/Cards.astro';
 import Cta from '@components/Cta.astro';
-import ContactUsForm from '@components/ContactUsForm.astro';
 import Hero from '@components/Hero.astro';
 import Logos from '@components/Logos.astro';
 import Testimonials from '@components/Testimonials.astro';
@@ -24,26 +23,25 @@ const { id } = Astro.props;
 const pages = await getPageById(id);
 const page: Page = pages.length ? pages[0] : null;
 
-const { _id, title, sections, metaTitle, metaDescription, socialImage } = page || {};
+const { title, sections, metaTitle, metaDescription, socialImage } = page || {};
 
 const componentMap = {
     cardsSection: Cards,
     ctaSection: Cta,
-    contactSection: ContactUsForm,
     heroSection: Hero,
     logosSection: Logos,
-    testimonialsSection: Testimonials,
+    testimonialsSection: Testimonials
 };
 ---
 
 {
     page && (
         <Layout title={metaTitle ?? title} description={metaDescription} image={socialImage}>
-            <div data-sb-object-id={_id}>
+            <div>
                 {sections?.length &&
-                    sections.map((section, idx) => {
+                    sections.map((section) => {
                         const Component = componentMap[section._type];
-                        return <Component {...section} data-sb-field-path={`sections.${idx}`} />;
+                        return <Component {...section} />;
                     })}
             </div>
         </Layout>

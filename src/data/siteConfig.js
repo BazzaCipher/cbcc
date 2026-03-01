@@ -10,10 +10,7 @@ const CONFIG_QUERY_OBJ = `{
     ...,
     logo ${IMAGE}
   },
-  footer {
-	...,
-	footerlogo ${IMAGE}
-  },
+  footer,
   titleSuffix
 }`;
 
