@@ -34,11 +34,11 @@ const {
                     <input type="email" name="Email Address" autocomplete="email" required class="w-full input input-bordered" />
                 </label>
                 <label class="grid gap-2">
-                    <span class="text-sm font-medium">Phone number <span class="font-normal text-base-content/50">(optional)</span></span>
+                    <span class="text-sm font-medium">Phone number</span>
                     <input type="tel" name="Phone Number" autocomplete="tel" pattern="[0-9+ ]+" class="w-full input input-bordered" />
                 </label>
                 <label class="grid gap-2">
-                    <span class="text-sm font-medium">Postcode <span class="font-normal text-base-content/50">(optional)</span></span>
+                    <span class="text-sm font-medium">Postcode</span>
                     <input type="text" name="Postcode" autocomplete="postal-code" pattern="[0-9]{4}" class="w-full input input-bordered" />
                 </label>
             </div>
@@ -49,8 +49,8 @@ const {
             </label>
 
             <div>
-                <label for="attachment" class="block text-sm font-medium">
-                    Photos of the surface <span class="font-normal text-base-content/50">(optional, helps us quote faster)</span>
+                <label for="attachment" class="block text-sm font-medium text-center">
+                    If you have any images, feel free to provide them below:
                 </label>
                 <div
                     id="dropzone"
@@ -74,7 +74,7 @@ const {
                             </label>
                             <p class="text-base-content/60">or drag &amp; drop</p>
                         </div>
-                        <p class="mt-2 text-xs text-base-content/50">PDF, PNG, JPG. Up to 5MB.</p>
+                        <p class="mt-2 text-xs text-base-content/50">PDF, PNG, JPG — up to 5MB</p>
                         <p id="file-name" class="hidden mt-3 text-sm"></p>
                         <p id="file-error" class="hidden mt-2 text-sm text-error"></p>
                     </div>
@@ -82,7 +82,7 @@ const {
             </div>
 
             <div class="text-center">
-                <button type="submit" class="px-10 btn btn-primary btn-lg">Send message</button>
+                <button type="submit" class="px-10 btn btn-primary btn-lg">Send Message</button>
             </div>
 
             <input type="checkbox" name="botcheck" class="hidden" style="display: none;" />
@@ -153,13 +153,13 @@ const {
                 } else {
                     const json = await response.json();
                     if (json.error === 'rate_limited') {
-                        showMessage('Please wait 1 hour before sending another message, or email admin@collimatedbeam.com directly.', false);
+                        showMessage('Please wait 1 hour before sending another message or send an email to admin@collimatedbeam.com', false);
                     } else {
-                        showMessage(json.message || 'Something went wrong. Please try again.', false);
+                        showMessage(json.message || 'Something went wrong.', false);
                     }
                 }
             } catch (err) {
-                showMessage('There was a network error. Please try again.', false);
+                showMessage('There was a network error.', false);
             } finally {
                 submitBtn.disabled = false;
             }
