@@ -1,13 +1,13 @@
 ---
 import { type Header } from 'types';
 import Action from '@components/Action.astro';
-import ResponsiveImage from '@components/ResponsiveImage.astro';
+import { Icon } from 'astro-icon/components';
 
 interface Props extends Header {
     'data-sb-field-path'?: string;
 }
 
-const { title, logo, navLinks, 'data-sb-field-path': fieldPath } = Astro.props;
+const { navLinks, 'data-sb-field-path': fieldPath } = Astro.props;
 ---
 
 <nav
@@ -15,21 +15,15 @@ const { title, logo, navLinks, 'data-sb-field-path': fieldPath } = Astro.props;
     data-sb-field-path={fieldPath}
 >
     <div class="flex items-center justify-between w-full h-full px-5 mx-auto max-w-7xl sm:px-6">
-        {
-            logo.src ? (
-                <a class="flex items-center gap-3 shrink-0" href="/">
-                    <ResponsiveImage _id={logo._id} src={logo.src} width={44} height={44} alt={logo.alt} class="rounded-full" />
-                    <span class="font-extrabold tracking-tight sm:text-lg">Collimated Beam Laser Cleaning</span>
-                </a>
-            ) : (
-                <a class="text-xl font-bold sm:text-2xl" href="/" data-sb-field-path=".title">
-                    {title}
-                </a>
-            )
-        }
-        {
-            navLinks && navLinks.length > 0 && (
-                <>
+        <a class="flex items-center gap-3 shrink-0" href="/">
+            <img src="/logomark-dark.png" alt="" width="315" height="193" class="w-auto h-7 logo-dark" />
+            <img src="/logomark-light.png" alt="" width="315" height="193" class="w-auto h-7 logo-light" />
+            <span class="font-extrabold tracking-tight sm:text-lg">Collimated Beam Laser Cleaning</span>
+        </a>
+        <div class="flex items-center gap-2">
+            {
+                navLinks && navLinks.length > 0 && (
+                    <>
                     <ul class="hidden lg:flex lg:flex-wrap lg:items-center lg:gap-6" data-sb-field-path=".navLinks">
                         {navLinks.map((item, index) => (
                             <li>
@@ -69,12 +63,29 @@ const { title, logo, navLinks, 'data-sb-field-path': fieldPath } = Astro.props;
                                         />
                                     </li>
                                 ))}
+                                <li class="pt-3 mt-2 border-t border-base-content/10">
+                                    <button type="button" class="theme-toggle btn btn-ghost btn-circle btn-sm" aria-label="Switch color theme">
+                                        <Icon name="mdi:weather-sunny" class="w-5 h-5 icon-sun" />
+                                        <Icon name="mdi:weather-night" class="w-5 h-5 icon-moon" />
+                                        <Icon name="mdi:theme-light-dark" class="w-5 h-5 icon-auto" />
+                                    </button>
+                                </li>
                             </ul>
                         </div>
                     </div>
-                </>
-            )
-        }
+                    </>
+                )
+            }
+            <button
+                type="button"
+                class:list={['theme-toggle btn btn-ghost btn-circle btn-sm', navLinks && navLinks.length > 0 && 'hidden lg:inline-flex']}
+                aria-label="Switch color theme"
+            >
+                <Icon name="mdi:weather-sunny" class="w-5 h-5 icon-sun" />
+                <Icon name="mdi:weather-night" class="w-5 h-5 icon-moon" />
+                <Icon name="mdi:theme-light-dark" class="w-5 h-5 icon-auto" />
+            </button>
+        </div>
     </div>
 </nav>
 
@@ -147,4 +158,27 @@ const { title, logo, navLinks, 'data-sb-field-path': fieldPath } = Astro.props;
     }
     navToggle();
     document.addEventListener('astro:after-swap', navToggle);
+
+    function initThemeToggle() {
+        const order = ['dark', 'light', 'auto'] as const;
+        document.querySelectorAll<HTMLElement>('.theme-toggle:not([data-theme-init])').forEach((btn) => {
+            btn.setAttribute('data-theme-init', '');
+            btn.addEventListener('click', () => {
+                const html = document.documentElement;
+                const mode = html.getAttribute('data-theme-mode') || 'auto';
+                const next = order[(order.indexOf(mode as (typeof order)[number]) + 1) % order.length];
+                const resolved =
+                    next === 'auto' ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : next;
+                html.setAttribute('data-theme-mode', next);
+                html.setAttribute('data-theme', resolved);
+                try {
+                    localStorage.setItem('theme', next);
+                } catch (e) {
+                    /* storage unavailable */
+                }
+            });
+        });
+    }
+    initThemeToggle();
+    document.addEventListener('astro:after-swap', initThemeToggle);
 </script>

@@ -61,6 +61,33 @@ html {
     color: var(--color-base-content);
 }
 
+/* Brand logo: white marks for the dark theme, black marks for the light theme */
+.logo-light {
+    display: none;
+}
+[data-theme='light'] .logo-light {
+    display: block;
+}
+[data-theme='light'] .logo-dark {
+    display: none;
+}
+
+/* Theme toggle cycles dark -> light -> auto; the icon shows the active mode */
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon,
+.theme-toggle .icon-auto {
+    display: none;
+}
+[data-theme-mode='light'] .theme-toggle .icon-sun {
+    display: block;
+}
+[data-theme-mode='dark'] .theme-toggle .icon-moon {
+    display: block;
+}
+[data-theme-mode='auto'] .theme-toggle .icon-auto {
+    display: block;
+}
+
 /* Technical label: badges, spec values */
 .tech-label {
     font-family: var(--font-mono);

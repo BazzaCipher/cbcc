@@ -39,11 +39,32 @@ function formatCanonicalURL(url: string | URL) {
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="dark" data-theme-mode="auto">
     <head>
         <!-- High Priority Global Metadata -->
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <!-- Apply the saved theme mode (light/dark/auto) before first paint to avoid a flash -->
+        <script is:inline>
+            (function () {
+                var systemLight = window.matchMedia('(prefers-color-scheme: light)');
+                function applyTheme() {
+                    var mode = null;
+                    try {
+                        mode = localStorage.getItem('theme');
+                    } catch (e) {
+                        /* storage unavailable */
+                    }
+                    if (mode !== 'light' && mode !== 'dark') mode = 'auto';
+                    var resolved = mode === 'auto' ? (systemLight.matches ? 'light' : 'dark') : mode;
+                    document.documentElement.setAttribute('data-theme-mode', mode);
+                    document.documentElement.setAttribute('data-theme', resolved);
+                }
+                applyTheme();
+                systemLight.addEventListener('change', applyTheme);
+                document.addEventListener('astro:after-swap', applyTheme);
+            })();
+        </script>
         <title>{title}</title>
         <meta name="generator" content={Astro.generator} />
 

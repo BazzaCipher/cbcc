@@ -7,7 +7,9 @@ interface Props extends HeroSection {
     'data-sb-field-path'?: string;
 }
 
-const { heading, body, cta, backgroundImage, theme, width, 'data-sb-field-path': fieldPath } = Astro.props;
+/* The hero sits on photography with a dark scrim, so it stays on the dark
+   theme in both page modes; Sanity's per-hero `theme` is intentionally ignored */
+const { heading, body, cta, backgroundImage, width, 'data-sb-field-path': fieldPath } = Astro.props;
 const bgSrc = backgroundImage?.image?.src;
 const bgOpacity = (backgroundImage?.opacity ?? 100) * 0.01;
 const inset = width === 'inset';
@@ -19,7 +21,7 @@ const inset = width === 'inset';
             'relative overflow-hidden flex items-center',
             inset ? 'mx-auto max-w-7xl rounded-box border border-base-content/8 min-h-[82dvh]' : 'min-h-[88dvh]'
         ]}
-        data-theme={theme || 'dark'}
+        data-theme="dark"
         data-hero-spotlight
     >
         {

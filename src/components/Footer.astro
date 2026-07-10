@@ -1,14 +1,13 @@
 ---
 import { marked } from 'marked';
 import { type Footer } from 'types';
-import ResponsiveImage from '@components/ResponsiveImage.astro';
 import { Icon } from 'astro-icon/components';
 
 interface Props extends Footer {
     'data-sb-field-path'?: string;
 }
 
-const { text, footerlogo, 'data-sb-field-path': fieldPath } = Astro.props;
+const { text, 'data-sb-field-path': fieldPath } = Astro.props;
 const links = [
     { href: 'https://instagram.com/collimated_bea_cleaning', icon: 'mdi:instagram', label: 'Instagram' },
     { href: 'https://www.facebook.com/profile.php?id=61581166697811', icon: 'mdi:facebook', label: 'Facebook' },
@@ -19,12 +18,11 @@ const links = [
 <div class="flex-grow" aria-hidden="true"></div>
 {
     text && (
-        <footer class="mt-16 border-t border-base-content/10 bg-base-200" data-theme="dark" data-sb-field-path={fieldPath}>
+        <footer class="mt-16 border-t border-base-content/10 bg-base-100" data-sb-field-path={fieldPath}>
             <div class="flex flex-col gap-10 px-5 py-12 mx-auto max-w-7xl sm:px-6 sm:flex-row sm:items-center sm:justify-between">
                 <div class="flex flex-col gap-4">
-                    {footerlogo?.src && (
-                        <ResponsiveImage _id={footerlogo._id} src={footerlogo.src} width={220} height={47} alt={footerlogo.alt} />
-                    )}
+                    <img src="/logo-dark.png" alt="Collimated Beam Cleaning Co." width="1026" height="193" class="w-auto h-10 logo-dark" />
+                    <img src="/logo-light.png" alt="Collimated Beam Cleaning Co." width="1026" height="193" class="w-auto h-10 logo-light" />
                     <div class="text-sm text-base-content/60" data-sb-field-path=".text" set:html={marked.parse(text)} />
                 </div>
                 <div class="flex flex-col gap-2 sm:items-end">
