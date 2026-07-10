@@ -1,10 +1,8 @@
-# Astro Netlify Sanity Starter
+# Collimated Beam Cleaning Company — Website
 
-![Astro Netlify Sanity Starter](https://assets.stackbit.com/docs/astro-sanity-starter-thumb.jpg)
+Marketing site for CBCC (technical laser surface cleaning), built on Astro 5 + Tailwind 4 + Sanity CMS, deployed on Netlify with [visual editing](https://docs.netlify.com/visual-editor/overview/).
 
-[Live Demo](https://astro-sanity-starter-demo.netlify.app/)
-
-Netlify Astro and Sanity minimal starter with [visual editing](https://docs.netlify.com/visual-editor/overview/).
+Design system: "Beamline" — dark steel ground, laser-green accent (`#58E0A6`), Archivo + JetBrains Mono, cursor-spotlight hero. Based on the Netlify Astro Sanity starter.
 
 | Prerequisites                                                                |
 | :--------------------------------------------------------------------------- |

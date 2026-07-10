@@ -4,6 +4,8 @@ import Footer from '@components/Footer.astro';
 import Header from '@components/Header.astro';
 import { fetchData } from '@data/siteConfig';
 
+import '@fontsource-variable/archivo';
+import '@fontsource/jetbrains-mono';
 import '../styles/globals.css';
 
 interface Props {
@@ -37,18 +39,13 @@ function formatCanonicalURL(url: string | URL) {
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
     <head>
         <!-- High Priority Global Metadata -->
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>{title}</title>
         <meta name="generator" content={Astro.generator} />
-
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
 
         <!-- Low Priority Global Metadata -->
         {configData.favicon?.src && <link rel="icon" type="image/svg+xml" href={configData.favicon.src} />}
@@ -79,6 +76,29 @@ function formatCanonicalURL(url: string | URL) {
             window.addEventListener('stackbitObjectsChanged', () => {
                 window.location.reload();
             });
+        </script>
+        <script>
+            function initReveals() {
+                const targets = document.querySelectorAll('[data-reveal]:not(.in-view)');
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    targets.forEach((el) => el.classList.add('in-view'));
+                    return;
+                }
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('in-view');
+                                observer.unobserve(entry.target);
+                            }
+                        });
+                    },
+                    { threshold: 0.15 }
+                );
+                targets.forEach((el) => observer.observe(el));
+            }
+            initReveals();
+            document.addEventListener('astro:after-swap', initReveals);
         </script>
     </body>
 </html>

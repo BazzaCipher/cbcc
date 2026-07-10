@@ -2,35 +2,186 @@
 import { marked } from 'marked';
 import { type HeroSection } from 'types';
 import Action from '@components/Action.astro';
-import Section from '@components/Section.astro';
 
 interface Props extends HeroSection {
     'data-sb-field-path'?: string;
 }
 
-const { heading, body, cta, ...rest } = Astro.props;
+const { heading, body, cta, backgroundImage, theme, width, 'data-sb-field-path': fieldPath } = Astro.props;
+const bgSrc = backgroundImage?.image?.src;
+const bgOpacity = (backgroundImage?.opacity ?? 100) * 0.01;
+const inset = width === 'inset';
 ---
 
-<Section {...rest} class="text-center">
-    {
-        heading && (
-            <h1 class="text-4xl font-black sm:text-6xl text-balance" data-sb-field-path=".heading">
-                {heading}
-            </h1>
-        )
-    }
-    {body && <div class:list={['mx-auto', heading && 'mt-6', 'max-w-prose markdown']} data-sb-field-path=".body" set:html={marked.parse(body)} />}
-    {
-        cta && cta.length > 0 && (
-            <div class:list={[(heading || body) && 'mt-8', 'flex flex-wrap items-center justify-center gap-4']} data-sb-field-path=".cta">
-                {cta.map((item, index) => (
-                    <Action
-                        action={item}
-                        class:list={[item._type === 'actionLink' && 'font-bold underline hover:no-underline']}
-                        data-sb-field-path={`.${index}`}
+<section class:list={['w-full', inset && 'px-3 sm:px-6']} data-sb-field-path={fieldPath}>
+    <div
+        class:list={[
+            'relative overflow-hidden flex items-center',
+            inset ? 'mx-auto max-w-7xl rounded-box border border-base-content/8 min-h-[82dvh]' : 'min-h-[88dvh]'
+        ]}
+        data-theme={theme || 'dark'}
+        data-hero-spotlight
+    >
+        {
+            bgSrc && (
+                <div class="absolute inset-0" data-sb-field-path=".backgroundImage" aria-hidden="true">
+                    <div
+                        class="absolute inset-0 bg-center bg-no-repeat bg-cover hero-zoom"
+                        style={{ backgroundImage: `url('${bgSrc}')`, opacity: bgOpacity }}
                     />
-                ))}
+                    <div
+                        class="absolute inset-0 bg-center bg-no-repeat bg-cover hero-grime"
+                        style={{ backgroundImage: `url('${bgSrc}')` }}
+                    />
+                    <div class="absolute inset-0 hero-scrim" />
+                    <div class="hero-glow" />
+                    <div class="hero-beam beam-sweep" />
+                </div>
+            )
+        }
+        <div class="relative w-full mx-auto max-w-7xl px-5 py-24 sm:px-10 sm:py-32">
+            <div class="max-w-3xl">
+                {
+                    heading && (
+                        <h1
+                            class="text-5xl font-black tracking-tight sm:text-7xl text-balance hero-rise"
+                            style={{ '--rise-delay': '0.2s' }}
+                            data-sb-field-path=".heading"
+                        >
+                            {heading}
+                        </h1>
+                    )
+                }
+                {
+                    body && (
+                        <div
+                            class:list={[heading && 'mt-6', 'max-w-prose text-lg text-base-content/75 markdown hero-rise']}
+                            style={{ '--rise-delay': '0.4s' }}
+                            data-sb-field-path=".body"
+                            set:html={marked.parse(body)}
+                        />
+                    )
+                }
+                {
+                    cta && cta.length > 0 && (
+                        <div
+                            class:list={[(heading || body) && 'mt-10', 'flex flex-wrap items-center gap-4 hero-rise']}
+                            style={{ '--rise-delay': '0.6s' }}
+                            data-sb-field-path=".cta"
+                        >
+                            {cta.map((item, index) => (
+                                <Action
+                                    action={item}
+                                    class:list={[item._type === 'actionLink' && 'font-bold underline hover:no-underline', 'btn-lg']}
+                                    data-sb-field-path={`.${index}`}
+                                />
+                            ))}
+                        </div>
+                    )
+                }
             </div>
-        )
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Dirty state of the surface: heavy, desaturated, dark */
+    .hero-grime {
+        filter: brightness(0.4) saturate(0.35) sepia(0.15);
     }
-</Section>
+    /* The cursor spotlight cuts a soft hole in the grime, revealing the cleaned surface */
+    [data-hero-spotlight].spotlight-on .hero-grime {
+        -webkit-mask-image: radial-gradient(
+            circle 260px at var(--mx, 50%) var(--my, 50%),
+            transparent 0%,
+            transparent 40%,
+            rgb(0 0 0 / 0.6) 75%,
+            #000 100%
+        );
+        mask-image: radial-gradient(
+            circle 260px at var(--mx, 50%) var(--my, 50%),
+            transparent 0%,
+            transparent 40%,
+            rgb(0 0 0 / 0.6) 75%,
+            #000 100%
+        );
+    }
+    /* Legibility scrim: keeps the headline readable over both states */
+    .hero-scrim {
+        background: linear-gradient(100deg, rgb(16 19 24 / 0.88) 0%, rgb(16 19 24 / 0.55) 45%, rgb(16 19 24 / 0.15) 100%);
+    }
+    /* Soft light that rides with the spotlight so the reveal reads on dark imagery */
+    .hero-glow {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+        background: radial-gradient(
+            circle 260px at var(--mx, 50%) var(--my, 50%),
+            color-mix(in oklab, var(--color-primary, #58e0a6) 22%, transparent) 0%,
+            transparent 70%
+        );
+    }
+    [data-hero-spotlight].spotlight-on .hero-glow {
+        opacity: 1;
+    }
+    /* One laser pass on load */
+    .hero-beam {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -3%;
+        width: 3px;
+        background: var(--color-primary, #58e0a6);
+        box-shadow: 0 0 28px 4px color-mix(in oklab, var(--color-primary, #58e0a6) 55%, transparent);
+        opacity: 0;
+        pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .hero-beam {
+            display: none;
+        }
+    }
+</style>
+
+<script>
+    function initHeroSpotlight() {
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const finePointer = window.matchMedia('(pointer: fine)').matches;
+        if (reduced || !finePointer) return;
+
+        document.querySelectorAll<HTMLElement>('[data-hero-spotlight]:not([data-spotlight-init])').forEach((hero) => {
+            hero.setAttribute('data-spotlight-init', '');
+            const raw = { x: 0.5, y: 0.5 };
+            const eased = { x: 0.5, y: 0.5 };
+            let raf: number | null = null;
+
+            const tick = () => {
+                eased.x += (raw.x - eased.x) * 0.12;
+                eased.y += (raw.y - eased.y) * 0.12;
+                hero.style.setProperty('--mx', `${(eased.x * 100).toFixed(2)}%`);
+                hero.style.setProperty('--my', `${(eased.y * 100).toFixed(2)}%`);
+                raf = requestAnimationFrame(tick);
+            };
+
+            hero.addEventListener('pointerenter', () => {
+                hero.classList.add('spotlight-on');
+                if (raf === null) tick();
+            });
+            hero.addEventListener('pointermove', (e) => {
+                const r = hero.getBoundingClientRect();
+                raw.x = (e.clientX - r.left) / r.width;
+                raw.y = (e.clientY - r.top) / r.height;
+            });
+            hero.addEventListener('pointerleave', () => {
+                if (raf !== null) {
+                    cancelAnimationFrame(raf);
+                    raf = null;
+                }
+            });
+        });
+    }
+    initHeroSpotlight();
+    document.addEventListener('astro:after-swap', initHeroSpotlight);
+</script>

@@ -12,22 +12,35 @@ interface Props extends LogosSection {
 const { heading, body, items, motion, ...rest } = Astro.props;
 ---
 
-<Section {...rest} class="text-center">
+<Section {...rest} class="logos-section">
     {
         heading && (
-            <h2 class="text-2xl font-black sm:text-4xl text-balance" data-sb-field-path=".heading">
+            <h2 class="text-3xl font-black tracking-tight sm:text-5xl text-balance" data-sb-field-path=".heading">
                 {heading}
+                <span class="beam-underline" aria-hidden="true" />
             </h2>
         )
     }
-    {body && <div class:list={['mx-auto', heading && 'mt-4', 'max-w-prose markdown']} data-sb-field-path=".body" set:html={marked.parse(body)} />}
+    {body && <div class:list={[heading && 'mt-5', 'max-w-prose text-base-content/75 markdown']} data-sb-field-path=".body" set:html={marked.parse(body)} />}
     {
         items &&
             items.length > 0 &&
             (motion !== 'static' ? (
-                <LogoStripAnimated items={items} motion={motion} class={heading || body ? 'mt-8' : undefined} data-sb-field-path=".items" />
+                <LogoStripAnimated items={items} motion={motion} class={heading || body ? 'mt-10' : undefined} data-sb-field-path=".items" />
             ) : (
-                <LogoStripStatic items={items} class={heading || body ? 'mt-8' : undefined} data-sb-field-path=".items" />
+                <LogoStripStatic items={items} class={heading || body ? 'mt-10' : undefined} data-sb-field-path=".items" />
             ))
     }
 </Section>
+
+<style>
+    /* Client logos arrive in arbitrary brand colors; on the dark ground they are
+       normalized to a quiet light monochrome so every mark stays visible */
+    :global([data-theme='dark'] .logos-section img) {
+        filter: brightness(0) invert(1) opacity(0.65);
+        transition: filter 0.3s ease;
+    }
+    :global([data-theme='dark'] .logos-section img:hover) {
+        filter: brightness(0) invert(1) opacity(1);
+    }
+</style>

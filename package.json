@@ -1,5 +1,5 @@
 {
-    "name": "astro-sanity-starter",
+    "name": "cbcc-website",
     "version": "0.0.1",
     "scripts": {
         "dev": "astro dev",
@@ -12,6 +12,8 @@
         "export": "node ./sanity-export/export.js"
     },
     "dependencies": {
+        "@fontsource-variable/archivo": "^5.2.8",
+        "@fontsource/jetbrains-mono": "^5.2.8",
         "@iconify-json/mdi": "^1.2.3",
         "@sanity/astro": "^3.1.6",
         "@sanity/client": "^7.6.0",
@@ -25,11 +27,13 @@
         "tailwindcss": "^4.0.9"
     },
     "devDependencies": {
+        "@astrojs/check": "^0.9.9",
         "@sanity/export": "^3.38.1",
         "@sanity/import": "^3.37.4",
         "@stackbit/cms-sanity": "^0.2.90",
         "@stackbit/types": "^2.0.0",
         "configstore": "7.0.0",
-        "daisyui": "^5.0.0"
+        "daisyui": "^5.0.0",
+        "typescript": "^5.9.3"
     }
 }

@@ -13,17 +13,20 @@ const { backgroundImage, theme, width, class: className, 'data-sb-field-path': f
 {
     width === 'inset' ? (
         <section class="w-full px-3 sm:px-6" data-width="inset" data-sb-field-path={fieldPath}>
-            <div class:list={['relative py-16 mx-auto overflow-hidden max-w-7xl rounded-box sm:py-24', className]} data-theme={theme || 'light'}>
+            <div
+                class:list={['relative py-16 mx-auto overflow-hidden max-w-7xl rounded-box border border-base-content/8 sm:py-24', className]}
+                data-theme={theme || 'dark'}
+            >
                 {backgroundImage && <BackgroundImage {...backgroundImage} data-sb-field-path=".backgroundImage" />}
-                <div class="relative w-10/12 mx-auto">
+                <div class="relative w-10/12 mx-auto" data-reveal>
                     <slot />
                 </div>
             </div>
         </section>
     ) : (
-        <section class:list={['relative w-full px-3 py-16 sm:px-6 sm:py-24', className]} data-theme={theme || 'light'} data-sb-field-path={fieldPath}>
+        <section class:list={['relative w-full px-3 py-16 sm:px-6 sm:py-28', className]} data-theme={theme || 'dark'} data-sb-field-path={fieldPath}>
             {backgroundImage && <BackgroundImage {...backgroundImage} data-sb-field-path=".backgroundImage" />}
-            <div class="relative mx-auto max-w-7xl">
+            <div class="relative mx-auto max-w-7xl" data-reveal>
                 <slot />
             </div>
         </section>

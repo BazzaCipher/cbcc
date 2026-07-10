@@ -14,13 +14,18 @@ const { badge, heading, body, cta, image, theme, textAlign, hasBorder, class: cl
 ---
 
 <div
-    class:list={['card', hasBorder !== false && 'card-border', 'w-full max-w-2xl', className]}
+    class:list={[
+        'card overflow-hidden bg-base-200 transition duration-300 hover:-translate-y-1',
+        hasBorder !== false && 'border border-base-content/10 hover:border-primary/40',
+        'w-full max-w-2xl',
+        className
+    ]}
     {...theme && theme !== 'transparent' && { 'data-theme': theme }}
     data-sb-field-path={fieldPath}
 >
     {
         image && image.src && (
-            <figure>
+            <figure class="card-degrime">
                 <ResponsiveImage _id={image._id} src={image.src} width={image.dimensions?.width} height={image.dimensions?.height} alt={image.alt} />
             </figure>
         )
@@ -29,19 +34,19 @@ const { badge, heading, body, cta, image, theme, textAlign, hasBorder, class: cl
         {badge && badge.label && <Badge {...badge} data-sb-field-path=".badge" />}
         {
             heading && (
-                <h3 class="font-black card-title sm:text-2xl" data-sb-field-path=".heading">
+                <h3 class="font-black card-title tracking-tight sm:text-2xl" data-sb-field-path=".heading">
                     {heading}
                 </h3>
             )
         }
-        {body && <div class="markdown" set:html={marked.parse(body)} data-sb-field-path=".body" />}
+        {body && <div class="markdown text-base-content/75" set:html={marked.parse(body)} data-sb-field-path=".body" />}
         {
             cta && cta.length > 0 && (
-                <div class="card-actions items-center" data-sb-field-path=".cta">
+                <div class="card-actions items-center mt-auto" data-sb-field-path=".cta">
                     {cta.map((item, index) => (
                         <Action
                             action={item}
-                            class:list={[item._type === 'actionLink' ? 'font-bold underline hover:no-underline' : 'px-4 py-2.5 h-auto min-h-0']}
+                            class:list={[item._type === 'actionLink' ? 'font-bold text-primary underline hover:no-underline' : 'px-4 py-2.5 h-auto min-h-0']}
                             data-sb-field-path={`.${index}`}
                         />
                     ))}
@@ -50,3 +55,16 @@ const { badge, heading, body, cta, image, theme, textAlign, hasBorder, class: cl
         }
     </div>
 </div>
+
+<style>
+    /* The card image starts contaminated (desaturated); hovering the card cleans it */
+    @media (prefers-reduced-motion: no-preference) {
+        .card-degrime :global(img) {
+            filter: grayscale(0.7) brightness(0.85);
+            transition: filter 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .card:hover .card-degrime :global(img) {
+            filter: none;
+        }
+    }
+</style>

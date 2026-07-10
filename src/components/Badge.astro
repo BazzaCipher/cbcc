@@ -8,14 +8,16 @@ interface Props extends Badge {
 
 const { label, theme, class: className, 'data-sb-field-path': fieldPath } = Astro.props;
 
+/* secondary/neutral fall back to a quiet monochrome outline: the steel secondary
+   color has too little contrast against dark card surfaces to carry an outline badge */
 const themeClassMap = {
-    primary: 'badge-primary',
-    secondary: 'badge-secondary',
-    accent: 'badge-accent',
-    neutral: 'badge-neutral'
+    primary: 'badge-primary badge-outline',
+    secondary: 'badge-outline border-base-content/30 text-base-content/70',
+    accent: 'badge-accent badge-outline',
+    neutral: 'badge-outline border-base-content/30 text-base-content/70'
 };
 ---
 
-<div class:list={['badge h-auto px-3 py-1 text-xs uppercase tracking-wider', themeClassMap[theme || 'primary'], className]} data-sb-field-path={fieldPath}>
+<div class:list={['badge h-auto px-3 py-1 text-xs tech-label', themeClassMap[theme || 'primary'], className]} data-sb-field-path={fieldPath}>
     <span data-sb-field-path=".label">{label}</span>
 </div>
