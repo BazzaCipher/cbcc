@@ -2,6 +2,11 @@
 import { marked } from 'marked';
 import { type HeroSection } from 'types';
 import Action from '@components/Action.astro';
+import BeforeAfter from '@components/BeforeAfter.astro';
+
+// The before/after comparison is a home-hero feature, driven by local assets.
+const beforeImage = { src: '/before.png', alt: 'Fence covered in graffiti', dimensions: { width: 989, height: 618 } };
+const afterImage = { src: '/after.png', alt: 'The same fence cleaned and restored', dimensions: { width: 1306, height: 816 } };
 
 interface Props extends HeroSection {
     'data-sb-field-path'?: string;
@@ -42,7 +47,8 @@ const inset = width === 'inset';
             )
         }
         <div class="relative w-full mx-auto max-w-7xl px-5 py-24 sm:px-10 sm:py-32">
-            <div class="max-w-3xl">
+            <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+              <div class="max-w-2xl">
                 {
                     heading && (
                         <h1
@@ -81,6 +87,11 @@ const inset = width === 'inset';
                         </div>
                     )
                 }
+              </div>
+
+              <div class="hero-rise" style={{ '--rise-delay': '0.7s' }}>
+                  <BeforeAfter beforeImage={beforeImage} afterImage={afterImage} />
+              </div>
             </div>
         </div>
     </div>
