@@ -2,6 +2,7 @@ import actionButton from './actionButton'
 import actionLink from './actionLink'
 import backgroundImage from './backgroundImage'
 import badge from './badge'
+import beforeAfterSection from './beforeAfterSection'
 import card from './card'
 import cardsSection from './cardsSection'
 import contactSection from './contactSection'
@@ -23,6 +24,7 @@ export const schemaTypes = [
   actionLink,
   backgroundImage,
   badge,
+  beforeAfterSection,
   card,
   cardsSection,
   contactSection,

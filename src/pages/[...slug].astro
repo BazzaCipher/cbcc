@@ -1,6 +1,7 @@
 ---
 import type { Page } from 'types';
 import Layout from '@layouts/Layout.astro';
+import BeforeAfter from '@components/BeforeAfter.astro';
 import Cards from '@components/Cards.astro';
 import Cta from '@components/Cta.astro';
 import ContactUsForm from '@components/ContactUsForm.astro';
@@ -27,6 +28,7 @@ const page: Page = pages.length ? pages[0] : null;
 const { _id, title, sections, metaTitle, metaDescription, socialImage } = page || {};
 
 const componentMap = {
+    beforeAfterSection: BeforeAfter,
     cardsSection: Cards,
     ctaSection: Cta,
     contactSection: ContactUsForm,

@@ -22,6 +22,10 @@ export const SECTIONS = `{
       image ${IMAGE}
     }
   },
+  _type == "beforeAfterSection" => {
+    beforeImage ${IMAGE},
+    afterImage ${IMAGE},
+  },
   _type == "logosSection" => {
     items[] ${IMAGE}
   },

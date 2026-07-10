@@ -32,6 +32,15 @@ export interface Card {
     hasBorder?: boolean;
 }
 
+export interface BeforeAfterSection extends Section {
+    heading?: string;
+    body?: string;
+    beforeImage: CustomImage;
+    afterImage: CustomImage;
+    beforeLabel?: string;
+    afterLabel?: string;
+}
+
 export interface CardsSection extends Section {
     heading?: string;
     body?: string;
@@ -93,7 +102,7 @@ export interface Page {
     _id: string;
     slug: Slug;
     title: string;
-    sections: Array<CardsSection | CtaSection | HeroSection | LogosSection | TestimonialsSection>;
+    sections: Array<BeforeAfterSection | CardsSection | CtaSection | HeroSection | LogosSection | TestimonialsSection>;
     metaTitle?: string;
     addTitleSuffix?: boolean;
     metaDescription?: string;
