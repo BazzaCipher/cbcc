@@ -12,189 +12,122 @@ interface Props extends HeroSection {
     'data-sb-field-path'?: string;
 }
 
-/* The hero sits on photography with a dark scrim, so it stays on the dark
-   theme in both page modes; Sanity's per-hero `theme` is intentionally ignored */
-const { heading, body, cta, backgroundImage, width, 'data-sb-field-path': fieldPath } = Astro.props;
-const bgSrc = backgroundImage?.image?.src;
-const bgOpacity = (backgroundImage?.opacity ?? 100) * 0.01;
+/* The hero is a dark "chamber" scope in both page themes (matching the
+   Collimated Beam design system), so it pins data-theme="dark". Sanity's
+   per-hero `theme` and background image are intentionally not used here —
+   the visual is the interactive before/after below the headline. */
+const { heading, body, cta, width, 'data-sb-field-path': fieldPath } = Astro.props;
 const inset = width === 'inset';
+// Eyebrow kicker — design-system label, not CMS copy. Descriptive, safe to change.
+const eyebrow = 'Precision laser cleaning';
 ---
 
 <section class:list={['w-full', inset && 'px-3 sm:px-6']} data-sb-field-path={fieldPath}>
     <div
         class:list={[
-            'relative overflow-hidden flex items-center',
-            inset ? 'mx-auto max-w-7xl rounded-box border border-base-content/8 min-h-[82dvh]' : 'min-h-[88dvh]'
+            'relative overflow-hidden bg-base-100',
+            inset ? 'mx-auto max-w-7xl rounded-box border border-base-content/8' : ''
         ]}
         data-theme="dark"
-        data-hero-spotlight
     >
-        {
-            bgSrc && (
-                <div class="absolute inset-0" data-sb-field-path=".backgroundImage" aria-hidden="true">
-                    <div
-                        class="absolute inset-0 bg-center bg-no-repeat bg-cover hero-zoom"
-                        style={{ backgroundImage: `url('${bgSrc}')`, opacity: bgOpacity }}
-                    />
-                    <div
-                        class="absolute inset-0 bg-center bg-no-repeat bg-cover hero-grime"
-                        style={{ backgroundImage: `url('${bgSrc}')` }}
-                    />
-                    <div class="absolute inset-0 hero-scrim" />
-                    <div class="hero-glow" />
-                    <div class="hero-beam beam-sweep" />
-                </div>
-            )
-        }
-        <div class="relative w-full mx-auto max-w-7xl px-5 py-24 sm:px-10 sm:py-32">
-            <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-              <div class="max-w-2xl">
-                {
-                    heading && (
-                        <h1
-                            class="text-5xl font-black tracking-tight sm:text-7xl text-balance hero-rise"
-                            style={{ '--rise-delay': '0.2s' }}
-                            data-sb-field-path=".heading"
-                        >
-                            {heading}
-                        </h1>
-                    )
-                }
-                {
-                    body && (
-                        <div
-                            class:list={[heading && 'mt-6', 'max-w-prose text-lg text-base-content/75 markdown hero-rise']}
-                            style={{ '--rise-delay': '0.4s' }}
-                            data-sb-field-path=".body"
-                            set:html={marked.parse(body)}
-                        />
-                    )
-                }
-                {
-                    cta && cta.length > 0 && (
-                        <div
-                            class:list={[(heading || body) && 'mt-10', 'flex flex-wrap items-center gap-4 hero-rise']}
-                            style={{ '--rise-delay': '0.6s' }}
-                            data-sb-field-path=".cta"
-                        >
-                            {cta.map((item, index) => (
-                                <Action
-                                    action={item}
-                                    class:list={[item._type === 'actionLink' && 'font-bold underline hover:no-underline', 'btn-lg']}
-                                    data-sb-field-path={`.${index}`}
-                                />
-                            ))}
-                        </div>
-                    )
-                }
-              </div>
+        <div class="hero-lines" aria-hidden="true"></div>
+        <div class="hero-beamline" aria-hidden="true"></div>
 
-              <div class="hero-rise" style={{ '--rise-delay': '0.7s' }}>
-                  <BeforeAfter beforeImage={beforeImage} afterImage={afterImage} />
-              </div>
-            </div>
+        <div class="relative mx-auto max-w-4xl px-5 pt-24 pb-14 text-center sm:px-8 sm:pt-32 sm:pb-16">
+            <span class="cb-eyebrow hero-rise" style={{ '--rise-delay': '0.1s' }}>{eyebrow}</span>
+            {
+                heading && (
+                    <h1
+                        class="mt-5 text-5xl font-black tracking-tight sm:text-7xl text-balance hero-rise"
+                        style={{ '--rise-delay': '0.25s' }}
+                        data-sb-field-path=".heading"
+                    >
+                        {heading}
+                    </h1>
+                )
+            }
+            {
+                body && (
+                    <div
+                        class:list={[heading && 'mt-6', 'mx-auto max-w-xl text-lg text-base-content/75 markdown hero-rise']}
+                        style={{ '--rise-delay': '0.4s' }}
+                        data-sb-field-path=".body"
+                        set:html={marked.parse(body)}
+                    />
+                )
+            }
+            {
+                cta && cta.length > 0 && (
+                    <div
+                        class:list={[(heading || body) && 'mt-10', 'flex flex-wrap items-center justify-center gap-4 hero-rise']}
+                        style={{ '--rise-delay': '0.6s' }}
+                        data-sb-field-path=".cta"
+                    >
+                        {cta.map((item, index) => (
+                            <Action
+                                action={item}
+                                class:list={[item._type === 'actionLink' && 'font-bold underline hover:no-underline', 'btn-lg']}
+                                data-sb-field-path={`.${index}`}
+                            />
+                        ))}
+                    </div>
+                )
+            }
+        </div>
+
+        <div
+            class="relative mx-auto max-w-5xl px-5 pb-20 sm:px-8 sm:pb-24 hero-rise"
+            style={{ '--rise-delay': '0.75s' }}
+        >
+            <BeforeAfter beforeImage={beforeImage} afterImage={afterImage} />
         </div>
     </div>
 </section>
 
 <style>
-    /* Dirty state of the surface: heavy, desaturated, dark */
-    .hero-grime {
-        filter: brightness(0.4) saturate(0.35) sepia(0.15);
-    }
-    /* The cursor spotlight cuts a soft hole in the grime, revealing the cleaned surface */
-    [data-hero-spotlight].spotlight-on .hero-grime {
-        -webkit-mask-image: radial-gradient(
-            circle 260px at var(--mx, 50%) var(--my, 50%),
-            transparent 0%,
-            transparent 40%,
-            rgb(0 0 0 / 0.6) 75%,
-            #000 100%
-        );
-        mask-image: radial-gradient(
-            circle 260px at var(--mx, 50%) var(--my, 50%),
-            transparent 0%,
-            transparent 40%,
-            rgb(0 0 0 / 0.6) 75%,
-            #000 100%
-        );
-    }
-    /* Legibility scrim: keeps the headline readable over both states */
-    .hero-scrim {
-        background: linear-gradient(100deg, rgb(16 19 24 / 0.88) 0%, rgb(16 19 24 / 0.55) 45%, rgb(16 19 24 / 0.15) 100%);
-    }
-    /* Soft light that rides with the spotlight so the reveal reads on dark imagery */
-    .hero-glow {
+    /* Faint horizontal scan lines across the chamber */
+    .hero-lines {
         position: absolute;
         inset: 0;
-        opacity: 0;
         pointer-events: none;
-        transition: opacity 0.4s ease;
-        background: radial-gradient(
-            circle 260px at var(--mx, 50%) var(--my, 50%),
-            color-mix(in oklab, var(--color-primary, #58e0a6) 22%, transparent) 0%,
-            transparent 70%
+        opacity: 0.5;
+        background-image: repeating-linear-gradient(
+            180deg,
+            transparent 0 83px,
+            rgb(255 255 255 / 0.045) 83px 84px
         );
     }
-    [data-hero-spotlight].spotlight-on .hero-glow {
-        opacity: 1;
-    }
-    /* One laser pass on load */
-    .hero-beam {
+    /* The signature: one glowing horizontal laser line behind the headline */
+    .hero-beamline {
         position: absolute;
-        top: 0;
-        bottom: 0;
-        left: -3%;
-        width: 3px;
-        background: var(--color-primary, #58e0a6);
-        box-shadow: 0 0 28px 4px color-mix(in oklab, var(--color-primary, #58e0a6) 55%, transparent);
-        opacity: 0;
+        left: 0;
+        right: 0;
+        top: 30%;
+        height: 2px;
         pointer-events: none;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            var(--color-primary) 30%,
+            #ff6a47 70%,
+            transparent
+        );
+        box-shadow: 0 0 26px 4px color-mix(in oklab, var(--color-primary) 45%, transparent);
     }
-    @media (prefers-reduced-motion: reduce) {
-        .hero-beam {
-            display: none;
+    @media (prefers-reduced-motion: no-preference) {
+        @keyframes beamline-in {
+            from {
+                opacity: 0;
+                transform: scaleX(0.2);
+            }
+            to {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+        }
+        .hero-beamline {
+            transform-origin: center;
+            animation: beamline-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
         }
     }
 </style>
-
-<script>
-    function initHeroSpotlight() {
-        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const finePointer = window.matchMedia('(pointer: fine)').matches;
-        if (reduced || !finePointer) return;
-
-        document.querySelectorAll<HTMLElement>('[data-hero-spotlight]:not([data-spotlight-init])').forEach((hero) => {
-            hero.setAttribute('data-spotlight-init', '');
-            const raw = { x: 0.5, y: 0.5 };
-            const eased = { x: 0.5, y: 0.5 };
-            let raf: number | null = null;
-
-            const tick = () => {
-                eased.x += (raw.x - eased.x) * 0.12;
-                eased.y += (raw.y - eased.y) * 0.12;
-                hero.style.setProperty('--mx', `${(eased.x * 100).toFixed(2)}%`);
-                hero.style.setProperty('--my', `${(eased.y * 100).toFixed(2)}%`);
-                raf = requestAnimationFrame(tick);
-            };
-
-            hero.addEventListener('pointerenter', () => {
-                hero.classList.add('spotlight-on');
-                if (raf === null) tick();
-            });
-            hero.addEventListener('pointermove', (e) => {
-                const r = hero.getBoundingClientRect();
-                raw.x = (e.clientX - r.left) / r.width;
-                raw.y = (e.clientY - r.top) / r.height;
-            });
-            hero.addEventListener('pointerleave', () => {
-                if (raf !== null) {
-                    cancelAnimationFrame(raf);
-                    raf = null;
-                }
-            });
-        });
-    }
-    initHeroSpotlight();
-    document.addEventListener('astro:after-swap', initHeroSpotlight);
-</script>
