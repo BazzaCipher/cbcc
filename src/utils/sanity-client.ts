@@ -17,14 +17,19 @@ const __dirname = path.dirname(__filename);
 // previewDrafts with no token errors out ("permission ... requires auth").
 const hasToken = !!SANITY_TOKEN;
 const wantsDrafts = isDev || isDeployPreview || previewDrafts;
+const useDrafts = wantsDrafts && hasToken;
 
 export const sanityConfig: ClientConfig = {
     projectId: SANITY_PROJECT_ID,
     dataset: SANITY_DATASET || 'production',
     useCdn: false,
     apiVersion: '2024-01-31',
-    token: SANITY_TOKEN,
-    perspective: wantsDrafts && hasToken ? 'previewDrafts' : 'published'
+    // Only authenticate when we actually need drafts. Published reads from the
+    // public dataset need no token — and sending a stale/invalid one (e.g. an
+    // old value left in the CI env) makes even public reads fail with
+    // "Unauthorized - Session not found", breaking the production build.
+    token: useDrafts ? SANITY_TOKEN : undefined,
+    perspective: useDrafts ? 'previewDrafts' : 'published'
 };
 
 export const client = createClient(sanityConfig);
