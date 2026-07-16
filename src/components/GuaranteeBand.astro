@@ -1,0 +1,78 @@
+---
+import { type Section } from 'types';
+
+/*
+ * Guarantee band from the Collimated Beam design: a slim dark strip of three
+ * big display numerals between the before/after gallery and the client marquee.
+ * Pinned dark (like the hero and footer) — the design's intentional dark accent
+ * in the light-section rhythm. `accent` glows a value in the beam colour.
+ */
+interface Stat {
+    value: string;
+    label: string;
+    accent?: boolean;
+}
+interface Props extends Section {
+    stats?: Array<Stat>;
+    'data-sb-field-path'?: string;
+}
+
+const { stats = [], 'data-sb-field-path': fieldPath } = Astro.props;
+---
+
+<section class="cb-guarantee" data-theme="dark" data-sb-field-path={fieldPath}>
+    <div class="cb-guarantee-grid" data-reveal data-sb-field-path=".stats">
+        {
+            stats.map((stat, idx) => (
+                <div class:list={['cb-guarantee-cell', idx > 0 && 'cb-guarantee-cell--divide']} data-sb-field-path={`.${idx}`}>
+                    <div class:list={['cb-guarantee-value', stat.accent && 'cb-guarantee-value--accent']}>{stat.value}</div>
+                    <div class="cb-guarantee-label">{stat.label}</div>
+                </div>
+            ))
+        }
+    </div>
+</section>
+
+<style>
+    .cb-guarantee {
+        background: var(--color-base-100);
+        padding: 64px 40px;
+    }
+    .cb-guarantee-grid {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        text-align: center;
+    }
+    .cb-guarantee-cell--divide {
+        border-left: 1px solid color-mix(in oklab, var(--color-base-content) 14%, transparent);
+    }
+    .cb-guarantee-value {
+        font-weight: 800;
+        font-size: 50px;
+        line-height: 1;
+        color: var(--color-base-content);
+    }
+    .cb-guarantee-value--accent {
+        color: var(--color-primary);
+    }
+    .cb-guarantee-label {
+        margin-top: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: color-mix(in oklab, var(--color-base-content) 55%, transparent);
+    }
+    @media (max-width: 640px) {
+        .cb-guarantee-grid {
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+        .cb-guarantee-cell--divide {
+            border-left: 0;
+        }
+    }
+</style>

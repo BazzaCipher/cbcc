@@ -44,9 +44,11 @@ export default defineType({
       description: 'The list containing the sections of a page',
       type: 'array',
       of: [
+        {type: 'beforeAfterSection'},
         {type: 'cardsSection'},
         {type: 'contactSection'},
         {type: 'ctaSection'},
+        {type: 'guaranteeBand'},
         {type: 'heroSection'},
         {type: 'logosSection'},
         {type: 'testimonialsSection'},

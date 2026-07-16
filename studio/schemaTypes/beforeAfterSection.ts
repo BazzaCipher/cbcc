@@ -1,12 +1,15 @@
 import {defineField, defineType} from 'sanity'
-import {SquareIcon} from '@sanity/icons'
+import {ImagesIcon} from '@sanity/icons'
 import {SECTION_BASE_FIELDS, SECTION_BASE_GROUPS} from './sectionBase'
 
+// "See the difference" — eyebrow + heading + body over a grid of interactive
+// before/after comparison cards. Each item is a `beforeAfter` (two images the
+// slider wipes between), so the whole gallery is editable in the Studio.
 export default defineType({
-  name: 'heroSection',
-  title: 'Hero',
+  name: 'beforeAfterSection',
+  title: 'Before / after gallery',
   type: 'object',
-  icon: SquareIcon,
+  icon: ImagesIcon,
   groups: SECTION_BASE_GROUPS,
   fields: [
     defineField({
@@ -28,17 +31,10 @@ export default defineType({
       group: 'content',
     }),
     defineField({
-      name: 'cta',
-      title: 'Call-to-action',
+      name: 'items',
+      title: 'Comparisons',
       type: 'array',
-      of: [{type: 'actionButton'}, {type: 'actionLink'}],
-      group: 'content',
-    }),
-    defineField({
-      name: 'image',
-      title: 'Image',
-      description: 'Full-bleed hero photo shown below the headline.',
-      type: 'customImage',
+      of: [{type: 'beforeAfter'}],
       group: 'content',
     }),
     ...SECTION_BASE_FIELDS,
@@ -46,12 +42,12 @@ export default defineType({
   preview: {
     select: {
       heading: 'heading',
-      body: 'body',
+      count: 'items.length',
     },
-    prepare(selection) {
+    prepare({heading, count}) {
       return {
-        title: `${selection.heading || selection.body || ''}`,
-        subtitle: 'Hero',
+        title: heading || 'Before / after gallery',
+        subtitle: count ? `${count} comparison${count === 1 ? '' : 's'}` : 'Before / after',
       }
     },
   },

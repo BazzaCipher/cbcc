@@ -2,39 +2,37 @@
 import { marked } from 'marked';
 import { type HeroSection } from 'types';
 import Action from '@components/Action.astro';
-import BeforeAfter from '@components/BeforeAfter.astro';
 
-// The before/after comparison is a home-hero feature, driven by local assets.
-const beforeImage = { src: '/before.png', alt: 'Fence covered in graffiti', dimensions: { width: 989, height: 618 } };
-const afterImage = { src: '/after.png', alt: 'The same fence cleaned and restored', dimensions: { width: 1306, height: 816 } };
-
+/*
+ * Hero from the Collimated Beam design: a dark "chamber" band — eyebrow +
+ * headline + body + two CTAs over faint scan-lines and one glowing beamline —
+ * followed by a full-bleed result photo that fades in from the band above.
+ * Pinned dark in both page themes, matching the design's fixed section rhythm.
+ */
+interface ImageInput {
+    _id?: string;
+    src: string;
+    alt?: string;
+    dimensions?: { width: number; height: number };
+}
 interface Props extends HeroSection {
+    eyebrow?: string;
+    image?: ImageInput;
     'data-sb-field-path'?: string;
 }
 
-/* The hero is a dark "chamber" scope in both page themes (matching the
-   Collimated Beam design system), so it pins data-theme="dark". Sanity's
-   per-hero `theme` and background image are intentionally not used here —
-   the visual is the interactive before/after below the headline. */
-const { heading, body, cta, width, 'data-sb-field-path': fieldPath } = Astro.props;
-const inset = width === 'inset';
-// Eyebrow kicker — design-system label, not CMS copy. Descriptive, safe to change.
-const eyebrow = 'Precision laser cleaning';
+const { eyebrow, heading, body, cta, image, 'data-sb-field-path': fieldPath } = Astro.props;
+// Design-system kicker; falls back when the CMS field is empty. Safe to change.
+const kicker = eyebrow || 'Precision laser cleaning';
 ---
 
-<section class:list={['w-full', inset && 'px-3 sm:px-6']} data-sb-field-path={fieldPath}>
-    <div
-        class:list={[
-            'relative overflow-hidden bg-base-100',
-            inset ? 'mx-auto max-w-7xl rounded-box border border-base-content/8' : ''
-        ]}
-        data-theme="dark"
-    >
+<section class="w-full" data-theme="dark" data-sb-field-path={fieldPath}>
+    <div class="hero-chamber relative overflow-hidden bg-base-100">
         <div class="hero-lines" aria-hidden="true"></div>
         <div class="hero-beamline" aria-hidden="true"></div>
 
         <div class="relative mx-auto max-w-4xl px-5 pt-24 pb-14 text-center sm:px-8 sm:pt-32 sm:pb-16">
-            <span class="cb-eyebrow hero-rise" style={{ '--rise-delay': '0.1s' }}>{eyebrow}</span>
+            {kicker && <span class="cb-eyebrow hero-rise" style={{ '--rise-delay': '0.1s' }} data-sb-field-path=".eyebrow">{kicker}</span>}
             {
                 heading && (
                     <h1
@@ -74,14 +72,16 @@ const eyebrow = 'Precision laser cleaning';
                 )
             }
         </div>
-
-        <div
-            class="relative mx-auto max-w-5xl px-5 pb-20 sm:px-8 sm:pb-24 hero-rise"
-            style={{ '--rise-delay': '0.75s' }}
-        >
-            <BeforeAfter beforeImage={beforeImage} afterImage={afterImage} />
-        </div>
     </div>
+
+    {
+        image && image.src && (
+            <div class="hero-photo-wrap" data-sb-field-path=".image">
+                <img class="hero-photo" src={image.src} alt={image.alt || ''} draggable="false" />
+                <div class="hero-photo-fade" aria-hidden="true" />
+            </div>
+        )
+    }
 </section>
 
 <style>
@@ -91,27 +91,17 @@ const eyebrow = 'Precision laser cleaning';
         inset: 0;
         pointer-events: none;
         opacity: 0.5;
-        background-image: repeating-linear-gradient(
-            180deg,
-            transparent 0 83px,
-            rgb(255 255 255 / 0.045) 83px 84px
-        );
+        background-image: repeating-linear-gradient(180deg, transparent 0 83px, rgb(255 255 255 / 0.045) 83px 84px);
     }
     /* The signature: one glowing horizontal laser line behind the headline */
     .hero-beamline {
         position: absolute;
         left: 0;
         right: 0;
-        top: 30%;
+        top: 48%;
         height: 2px;
         pointer-events: none;
-        background: linear-gradient(
-            90deg,
-            transparent,
-            var(--color-primary) 30%,
-            #ff6a47 70%,
-            transparent
-        );
+        background: linear-gradient(90deg, transparent, var(--color-primary) 30%, #ff6a47 70%, transparent);
         box-shadow: 0 0 26px 4px color-mix(in oklab, var(--color-primary) 45%, transparent);
     }
     @media (prefers-reduced-motion: no-preference) {
@@ -128,6 +118,31 @@ const eyebrow = 'Precision laser cleaning';
         .hero-beamline {
             transform-origin: center;
             animation: beamline-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+        }
+    }
+
+    /* Full-bleed result photo below the chamber, fading in from the band above */
+    .hero-photo-wrap {
+        position: relative;
+        height: 400px;
+        overflow: hidden;
+        background: var(--color-base-200);
+    }
+    .hero-photo {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .hero-photo-fade {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(180deg, var(--color-base-100), transparent 22%);
+    }
+    @media (max-width: 640px) {
+        .hero-photo-wrap {
+            height: 260px;
         }
     }
 </style>

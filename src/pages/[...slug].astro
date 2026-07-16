@@ -1,9 +1,11 @@
 ---
 import type { Page } from 'types';
 import Layout from '@layouts/Layout.astro';
+import BeforeAfterSection from '@components/BeforeAfterSection.astro';
 import Cards from '@components/Cards.astro';
 import Cta from '@components/Cta.astro';
 import ContactUsForm from '@components/ContactUsForm.astro';
+import GuaranteeBand from '@components/GuaranteeBand.astro';
 import Hero from '@components/Hero.astro';
 import Logos from '@components/Logos.astro';
 import Testimonials from '@components/Testimonials.astro';
@@ -27,9 +29,11 @@ const page: Page = pages.length ? pages[0] : null;
 const { _id, title, sections, metaTitle, metaDescription, socialImage } = page || {};
 
 const componentMap = {
+    beforeAfterSection: BeforeAfterSection,
     cardsSection: Cards,
     ctaSection: Cta,
     contactSection: ContactUsForm,
+    guaranteeBand: GuaranteeBand,
     heroSection: Hero,
     logosSection: Logos,
     testimonialsSection: Testimonials,

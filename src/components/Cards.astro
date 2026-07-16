@@ -2,36 +2,95 @@
 import { marked } from 'marked';
 import { type CardsSection } from 'types';
 import Card from '@components/Card.astro';
+import Action from '@components/Action.astro';
+import Badge from '@components/Badge.astro';
+import ResponsiveImage from '@components/ResponsiveImage.astro';
 import Section from '@components/Section.astro';
 
 interface Props extends CardsSection {
+    eyebrow?: string;
+    layout?: 'grid' | 'featureRows';
     'data-sb-field-path'?: string;
 }
 
-const { heading, body, items, columns, ...rest } = Astro.props;
+const { eyebrow, heading, body, items, columns, layout, ...rest } = Astro.props;
+// "Feature rows" = the design's "Why choose us": each item is a large image
+// beside its text, alternating sides. Anything else falls back to the card grid.
+const featureRows = layout === 'featureRows';
 ---
 
 <Section {...rest}>
+    {eyebrow && <span class="cb-eyebrow" data-sb-field-path=".eyebrow">{eyebrow}</span>}
     {
         heading && (
-            <h2 class="text-3xl font-black tracking-tight sm:text-5xl text-balance" data-sb-field-path=".heading">
+            <h2 class:list={[eyebrow && 'mt-3', 'text-3xl font-black tracking-tight sm:text-5xl text-balance']} data-sb-field-path=".heading">
                 {heading}
                 <span class="beam-underline" aria-hidden="true" />
             </h2>
         )
     }
-    {body && <div class:list={[heading && 'mt-5', 'max-w-prose text-base-content/75 markdown']} data-sb-field-path=".body" set:html={marked.parse(body)} />}
+    {body && <div class:list={[(eyebrow || heading) && 'mt-5', 'max-w-prose text-base-content/75 markdown']} data-sb-field-path=".body" set:html={marked.parse(body)} />}
+
     {
-        items && items?.length > 0 && (
+        items && items.length > 0 && featureRows && (
+            <div class:list={[(heading || body) && 'mt-16', 'flex flex-col gap-16 sm:gap-20']} data-sb-field-path=".items">
+                {items.map((item, idx) => (
+                    <div
+                        class="grid items-center gap-8 md:grid-cols-2 md:gap-14"
+                        data-reveal
+                        style={{ '--reveal-delay': `${idx * 0.08}s` }}
+                        data-sb-field-path={`.${idx}`}
+                    >
+                        {item.image && item.image.src && (
+                            <figure class:list={['m-0 overflow-hidden rounded-box border border-base-content/10 feature-photo', idx % 2 === 1 && 'md:order-2']}>
+                                <ResponsiveImage
+                                    _id={item.image._id}
+                                    src={item.image.src}
+                                    width={item.image.dimensions?.width}
+                                    height={item.image.dimensions?.height}
+                                    alt={item.image.alt}
+                                />
+                            </figure>
+                        )}
+                        <div class={idx % 2 === 1 ? 'md:order-1' : undefined}>
+                            {item.badge && item.badge.label && <Badge {...item.badge} data-sb-field-path=".badge" />}
+                            {item.heading && (
+                                <h3 class:list={[item.badge?.label && 'mt-3', 'text-2xl font-bold tracking-tight sm:text-3xl']} data-sb-field-path=".heading">
+                                    {item.heading}
+                                </h3>
+                            )}
+                            {item.body && (
+                                <div class="mt-4 text-base-content/75 markdown" data-sb-field-path=".body" set:html={marked.parse(item.body)} />
+                            )}
+                            {item.cta && item.cta.length > 0 && (
+                                <div class="mt-5 flex flex-wrap items-center gap-4" data-sb-field-path=".cta">
+                                    {item.cta.map((action, i) => (
+                                        <Action
+                                            action={action}
+                                            class:list={[action._type === 'actionLink' && 'font-bold text-primary underline hover:no-underline']}
+                                            data-sb-field-path={`.${i}`}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        )
+    }
+
+    {
+        items && items.length > 0 && !featureRows && (
             <div
                 class:list={[
-                    (heading || body) && 'mt-12',
+                    (eyebrow || heading || body) && 'mt-12',
                     'grid gap-6 items-stretch',
                     columns === 'one' ? undefined : columns === 'two' ? 'md:grid-cols-2' : 'md:grid-cols-3'
                 ]}
                 data-sb-field-path=".items"
             >
-                {items?.map((item, idx) => (
+                {items.map((item, idx) => (
                     <div class="flex" data-reveal style={{ '--reveal-delay': `${idx * 0.08}s` }}>
                         <Card {...item} data-sb-field-path={`.${idx}`} class="flex-1" />
                     </div>
@@ -40,3 +99,17 @@ const { heading, body, items, columns, ...rest } = Astro.props;
         )
     }
 </Section>
+
+<style>
+    /* Feature-row photos start contaminated (desaturated) and clean on hover */
+    @media (prefers-reduced-motion: no-preference) {
+        .feature-photo :global(img) {
+            width: 100%;
+            filter: grayscale(0.6) brightness(0.88);
+            transition: filter 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .feature-photo:hover :global(img) {
+            filter: none;
+        }
+    }
+</style>

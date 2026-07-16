@@ -10,6 +10,12 @@ export default defineType({
   groups: SECTION_BASE_GROUPS,
   fields: [
     defineField({
+      name: 'eyebrow',
+      title: 'Eyebrow',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
       name: 'heading',
       title: 'Heading',
       type: 'string',
@@ -29,6 +35,21 @@ export default defineType({
       group: 'content',
     }),
     ...SECTION_BASE_FIELDS,
+    defineField({
+      name: 'variant',
+      title: 'Variant',
+      description:
+        'Marquee is the auto-sliding belt from the design. Grid is the static multi-column layout.',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Marquee', value: 'marquee'},
+          {title: 'Grid', value: 'grid'},
+        ],
+      },
+      initialValue: 'marquee',
+      group: 'styles',
+    }),
     defineField({
       name: 'columns',
       title: 'Columns',

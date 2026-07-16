@@ -2,6 +2,8 @@ import actionButton from './actionButton'
 import actionLink from './actionLink'
 import backgroundImage from './backgroundImage'
 import badge from './badge'
+import beforeAfter from './beforeAfter'
+import beforeAfterSection from './beforeAfterSection'
 import card from './card'
 import cardsSection from './cardsSection'
 import contactSection from './contactSection'
@@ -9,6 +11,7 @@ import company from './company'
 import ctaSection from './ctaSection'
 import customImage from './customImage'
 import footer from './footer'
+import guaranteeBand from './guaranteeBand'
 import header from './header'
 import heroSection from './heroSection'
 import logosSection from './logosSection'
@@ -23,6 +26,8 @@ export const schemaTypes = [
   actionLink,
   backgroundImage,
   badge,
+  beforeAfter,
+  beforeAfterSection,
   card,
   cardsSection,
   contactSection,
@@ -30,6 +35,7 @@ export const schemaTypes = [
   ctaSection,
   customImage,
   footer,
+  guaranteeBand,
   header,
   heroSection,
   logosSection,

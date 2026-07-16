@@ -10,6 +10,12 @@ export default defineType({
   groups: SECTION_BASE_GROUPS,
   fields: [
     defineField({
+      name: 'eyebrow',
+      title: 'Eyebrow',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
       name: 'heading',
       title: 'Heading',
       type: 'string',
@@ -29,6 +35,21 @@ export default defineType({
       group: 'content',
     }),
     ...SECTION_BASE_FIELDS,
+    defineField({
+      name: 'layout',
+      title: 'Layout',
+      description:
+        'Grid shows the cards in columns. Feature rows alternates each item as a large image beside its text (matching the "Why choose us" design).',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Grid', value: 'grid'},
+          {title: 'Feature rows', value: 'featureRows'},
+        ],
+      },
+      initialValue: 'grid',
+      group: 'styles',
+    }),
     defineField({
       name: 'columns',
       title: 'Columns',

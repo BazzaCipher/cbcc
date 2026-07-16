@@ -16,10 +16,20 @@ export const SECTIONS = `{
       "src": image.asset->url
     }
   },
+  _type == "heroSection" => {
+    image ${IMAGE}
+  },
   _type == "cardsSection" => {
     items[] {
       ...,
       image ${IMAGE}
+    }
+  },
+  _type == "beforeAfterSection" => {
+    items[] {
+      ...,
+      beforeImage ${IMAGE},
+      afterImage ${IMAGE}
     }
   },
   _type == "logosSection" => {

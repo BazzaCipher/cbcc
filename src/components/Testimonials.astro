@@ -5,31 +5,137 @@ import Testimonial from '@components/Testimonial.astro';
 import Section from '@components/Section.astro';
 
 interface Props extends TestimonialsSection {
+    eyebrow?: string;
+    variant?: 'marquee' | 'grid';
     'data-sb-field-path'?: string;
 }
 
-const { heading, body, items, columns, ...rest } = Astro.props;
+const { eyebrow, heading, body, items, columns, variant, ...rest } = Astro.props;
+// The design's "What our clients say" is an auto-sliding marquee; `grid` keeps
+// the original static multi-column layout. Default (unset) is the marquee.
+const marquee = variant !== 'grid';
+
+const plainQuote = (q?: string) => (q ? q.replace(/[*_`#>\-\[\]]/g, '').trim() : '');
+// Two copies back-to-back give the seamless -50% loop; the clone is decorative.
+const loop = marquee && items ? [...items.map((i) => ({ i, clone: false })), ...items.map((i) => ({ i, clone: true }))] : [];
 ---
 
-<Section {...rest}>
-    {
-        heading && (
-            <h2 class="text-3xl font-black tracking-tight sm:text-5xl text-balance" data-sb-field-path=".heading">
-                {heading}
-                <span class="beam-underline" aria-hidden="true" />
-            </h2>
-        )
-    }
-    {body && <div class:list={[heading && 'mt-5', 'max-w-prose text-base-content/75 markdown']} data-sb-field-path=".body" set:html={marked.parse(body)} />}
-    {
-        items && items?.length > 0 && (
-            <div class:list={[(heading || body) && 'mt-12', 'grid gap-6 items-stretch', columns !== 'one' && 'md:grid-cols-2']} data-sb-field-path=".items">
-                {items?.map((testimonial, idx) => (
-                    <div class="flex" data-reveal style={{ '--reveal-delay': `${idx * 0.08}s` }}>
-                        <Testimonial {...testimonial} data-sb-field-path={`.${idx}`} class="flex-1" />
-                    </div>
-                ))}
+{
+    marquee ? (
+        <section class="w-full py-20 sm:py-24" data-sb-field-path={rest['data-sb-field-path']}>
+            {(eyebrow || heading) && (
+                <div class="mx-auto mb-8 max-w-7xl px-5 text-center sm:px-8" data-reveal>
+                    {eyebrow && <span class="cb-eyebrow" data-sb-field-path=".eyebrow">{eyebrow}</span>}
+                    {heading && (
+                        <h2 class:list={[eyebrow && 'mt-3', 'text-3xl font-black tracking-tight sm:text-5xl text-balance']} data-sb-field-path=".heading">
+                            {heading}
+                        </h2>
+                    )}
+                </div>
+            )}
+            <div class="cb-testi-mask">
+                <div class="cb-testi-track" data-sb-field-path=".items">
+                    {loop.map(({ i, clone }, idx) => (
+                        <figure class="cb-testi-card" aria-hidden={clone ? 'true' : undefined} data-sb-field-path={clone ? undefined : `.${idx}`}>
+                            <svg class="cb-testi-quote" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true">
+                                <path d="M9.5 6C6.5 6 4 8.6 4 12v6h6v-6H7.2c0-1.9 1-3.2 2.8-3.4V6Zm10 0c-3 0-5.5 2.6-5.5 6v6h6v-6h-2.8c0-1.9 1-3.2 2.8-3.4V6Z" />
+                            </svg>
+                            <blockquote class="cb-testi-quote-text">{plainQuote(i.quote)}</blockquote>
+                            {i.author && (i.author.name || i.author.title) && (
+                                <figcaption class="cb-testi-cite">{[i.author.name, i.author.title].filter(Boolean).join(', ')}</figcaption>
+                            )}
+                        </figure>
+                    ))}
+                </div>
             </div>
-        )
+        </section>
+    ) : (
+        <Section {...rest}>
+            {eyebrow && <span class="cb-eyebrow" data-sb-field-path=".eyebrow">{eyebrow}</span>}
+            {heading && (
+                <h2 class:list={[eyebrow && 'mt-3', 'text-3xl font-black tracking-tight sm:text-5xl text-balance']} data-sb-field-path=".heading">
+                    {heading}
+                    <span class="beam-underline" aria-hidden="true" />
+                </h2>
+            )}
+            {body && <div class:list={[(eyebrow || heading) && 'mt-5', 'max-w-prose text-base-content/75 markdown']} data-sb-field-path=".body" set:html={marked.parse(body)} />}
+            {items && items.length > 0 && (
+                <div class:list={[(heading || body) && 'mt-12', 'grid gap-6 items-stretch', columns !== 'one' && 'md:grid-cols-2']} data-sb-field-path=".items">
+                    {items.map((testimonial, idx) => (
+                        <div class="flex" data-reveal style={{ '--reveal-delay': `${idx * 0.08}s` }}>
+                            <Testimonial {...testimonial} data-sb-field-path={`.${idx}`} class="flex-1" />
+                        </div>
+                    ))}
+                </div>
+            )}
+        </Section>
+    )
+}
+
+<style>
+    /* Fade the belt out at both edges so cards enter/leave, not pop */
+    .cb-testi-mask {
+        position: relative;
+        overflow: hidden;
+        -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+        mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
     }
-</Section>
+    .cb-testi-track {
+        display: flex;
+        width: max-content;
+        animation: cb-marquee 44s linear infinite;
+    }
+    .cb-testi-track:hover {
+        animation-play-state: paused;
+    }
+    .cb-testi-card {
+        flex: 0 0 auto;
+        width: 420px;
+        max-width: 82vw;
+        margin: 0 24px 0 0;
+        padding: 28px 30px;
+        background: var(--color-base-200);
+        border: 1px solid color-mix(in oklab, var(--color-base-content) 10%, transparent);
+        border-radius: var(--radius-box, 1rem);
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+    }
+    .cb-testi-quote {
+        color: var(--color-primary);
+    }
+    .cb-testi-quote-text {
+        margin: 14px 0 0;
+        font-weight: 600;
+        font-size: 19px;
+        line-height: 1.45;
+        letter-spacing: -0.01em;
+        color: var(--color-base-content);
+    }
+    .cb-testi-cite {
+        margin-top: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
+    }
+    @keyframes cb-marquee {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-50%);
+        }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .cb-testi-track {
+            animation: none;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: auto;
+            gap: 24px;
+        }
+        .cb-testi-card {
+            margin: 0;
+        }
+    }
+</style>
