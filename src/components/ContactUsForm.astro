@@ -9,7 +9,7 @@ interface Props extends ContactUsSection {
 const {
     title = 'Contact Us',
     subtitle = 'We’d love to hear from you. Please fill out the form below.',
-    formAction = 'https://api.web3forms.com/submit',
+    formAction = '/',
     'data-sb-field-path': fieldPath
 } = Astro.props as Props;
 ---
@@ -19,7 +19,24 @@ const {
         <h2 class="text-3xl font-black tracking-tight text-center sm:text-5xl text-balance">{title}</h2>
         <p class="mt-4 text-center text-base-content/75">{subtitle}</p>
 
-        <form action={formAction} method="POST" class="grid gap-6 mt-12" id="contact-form" data-max-size-mb="5">
+        <form
+            name="contact"
+            action={formAction}
+            method="POST"
+            enctype="multipart/form-data"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            class="grid gap-6 mt-12"
+            id="contact-form"
+            data-max-size-mb="5"
+        >
+            {/* Netlify needs this to route the AJAX submission to the "contact" form */}
+            <input type="hidden" name="form-name" value="contact" />
+            {/* Honeypot: hidden from people, tempting to bots. A filled value makes Netlify drop the submission. */}
+            <p class="hidden" aria-hidden="true">
+                <label>Leave this field empty if you're human:<input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+            </p>
+
             <div id="form-message" class="hidden text-center" role="status" aria-live="polite">
                 <p id="form-message-text" class="font-medium"></p>
             </div>
@@ -74,7 +91,7 @@ const {
                             </label>
                             <p class="text-base-content/60">or drag &amp; drop</p>
                         </div>
-                        <p class="mt-2 text-xs text-base-content/50">PDF, PNG, JPG — up to 5MB</p>
+                        <p class="mt-2 text-xs text-base-content/50">PDF, PNG, JPG (up to 5MB)</p>
                         <p id="file-name" class="hidden mt-3 text-sm"></p>
                         <p id="file-error" class="hidden mt-2 text-sm text-error"></p>
                     </div>
@@ -84,8 +101,6 @@ const {
             <div class="text-center">
                 <button type="submit" class="px-10 btn btn-primary btn-lg">Send Message</button>
             </div>
-
-            <input type="checkbox" name="botcheck" class="hidden" style="display: none;" />
         </form>
     </div>
 </Section>
@@ -140,9 +155,10 @@ const {
             submitBtn.disabled = true;
 
             try {
+                // Netlify Forms accepts a multipart POST to any site path; the
+                // hidden form-name field routes it to the "contact" form.
                 const response = await fetch(form.action, {
                     method: 'POST',
-                    headers: { Accept: 'application/json' },
                     body: new FormData(form)
                 });
 
@@ -151,15 +167,10 @@ const {
                     resetMessages();
                     showMessage('Thank you! Your message has been sent.', true);
                 } else {
-                    const json = await response.json();
-                    if (json.error === 'rate_limited') {
-                        showMessage('Please wait 1 hour before sending another message or send an email to don@collimatedbeam.com', false);
-                    } else {
-                        showMessage(json.message || 'Something went wrong.', false);
-                    }
+                    showMessage('Something went wrong. Please email us directly at don@collimatedbeam.com.', false);
                 }
             } catch (err) {
-                showMessage('There was a network error.', false);
+                showMessage('There was a network error. Please email us directly at don@collimatedbeam.com.', false);
             } finally {
                 submitBtn.disabled = false;
             }
